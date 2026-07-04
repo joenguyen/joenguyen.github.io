@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>240Z MS3Pro Tuning Assistant</title>
+<style>
+:root{
+  --bg:#12151b; --surface:#1a2029; --surface2:#212832; --border:#2c3440;
+  --text:#e8ecf2; --muted:#8791a1;
+  --danger:#e2685a; --danger-soft:#3a2320;
+  --info:#6fb2e0; --info-soft:#1e2e3a;
+  --open:#dba24c; --open-soft:#3a2d18;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  --sans: ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: light){
+  :root{
+    --bg:#f2f4f7; --surface:#ffffff; --surface2:#eef1f5; --border:#d7dce3;
+    --text:#1a2029; --muted:#5c6472;
+    --danger:#c23e2b; --danger-soft:#f4e2de;
+    --info:#2f6fa8; --info-soft:#dde9f3;
+    --open:#a8681c; --open-soft:#f2e2c8;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12151b; --surface:#1a2029; --surface2:#212832; --border:#2c3440;
+  --text:#e8ecf2; --muted:#8791a1;
+  --danger:#e2685a; --danger-soft:#3a2320;
+  --info:#6fb2e0; --info-soft:#1e2e3a;
+  --open:#dba24c; --open-soft:#3a2d18;
+}
+:root[data-theme="light"]{
+  --bg:#f2f4f7; --surface:#ffffff; --surface2:#eef1f5; --border:#d7dce3;
+  --text:#1a2029; --muted:#5c6472;
+  --danger:#c23e2b; --danger-soft:#f4e2de;
+  --info:#2f6fa8; --info-soft:#dde9f3;
+  --open:#a8681c; --open-soft:#f2e2c8;
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--bg); color:var(--text); font-family:var(--sans); line-height:1.55;}
+.page{max-width:880px; margin:0 auto; padding:48px 24px 96px;}
+.masthead{border-bottom:2px solid var(--text); padding-bottom:20px; margin-bottom:8px;}
+.eyebrow{font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-weight:600; margin:0 0 10px;}
+h1{font-size:28px; margin:0 0 6px; letter-spacing:-0.01em;}
+.meta{display:flex; flex-wrap:wrap; gap:4px 18px; font-size:13px; color:var(--muted); margin-top:14px;}
+.meta code{font-family:var(--mono); font-size:12px; background:var(--surface2); padding:1px 5px; border-radius:3px;}
+section{margin-top:44px;}
+section > h2{
+  font-size:13px; text-transform:uppercase; letter-spacing:0.1em; font-weight:700;
+  color:var(--muted); margin:0 0 16px; padding-bottom:8px; border-bottom:1px solid var(--border);
+}
+section h3{font-size:16px; margin:24px 0 6px;}
+section p{color:var(--text); max-width:70ch;}
+section ul{margin:0 0 14px; padding-left:22px;}
+section ul li{margin:6px 0; max-width:70ch;}
+section ul ul{margin:6px 0;}
+section ol{list-style:none; margin:0 0 14px; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; counter-reset:rulenum;}
+section ol li{
+  counter-increment:rulenum; background:var(--surface); border:1px solid var(--border);
+  border-left:3px solid var(--danger); border-radius:8px; padding:14px 16px 14px 44px; position:relative; max-width:none;
+}
+section ol li::before{
+  content:counter(rulenum); position:absolute; left:12px; top:14px; font-weight:700; color:var(--danger);
+  font-family:var(--mono); font-size:12px; background:var(--danger-soft); width:20px; height:20px;
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+}
+code{font-family:var(--mono); font-size:0.85em; background:var(--surface2); padding:1px 5px; border-radius:3px; color:var(--text);}
+pre{background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:12px 14px; overflow-x:auto;}
+pre code{background:none; padding:0;}
+a{color:var(--info); text-decoration:none;}
+a:hover{text-decoration:underline;}
+strong{color:var(--text); font-weight:700;}
+del{color:var(--muted); text-decoration:line-through;}
+footer{margin-top:56px; padding-top:16px; border-top:1px solid var(--border); font-size:12px; color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="masthead">
+    <p class="eyebrow">Tuning Knowledge Base &middot; Auto-generated, do not edit directly</p>
+    <h1>240Z MS3Pro Tuning Assistant</h1>
+    <div class="meta">
+      <span>CLAUDE.md last changed: <code>2026-07-04 12:00</code></span>
+      <span>Repo commit: <code>2ac0f0c</code></span>
+      <span>Page generated: <code>2026-07-04 17:09 UTC</code></span>
+    </div>
+  </div>
+  <p>This repo is used to troubleshoot and analyze the ECU tune for a 1971 Datsun 240Z
+running a 2JZ-GTE VVTi swap on a MegaSquirt MS3Pro ECU. Claude's job here is to
+read logs and tune files, cross-reference them against documentation/community
+knowledge, and help diagnose issues — <strong>not</strong> to edit the tune.</p>
+<section>
+<h2>Non-negotiable rules</h2>
+<ol>
+<li><strong>DO NOT MAKE CHANGES unless the user explicitly asks — even in auto mode.</strong>
+   This applies to tune files (<code>.msq</code>), ECU settings, TunerStudio project files,
+   and anything under <code>~/TunerStudioProjects/240z</code>. Read-only by default. Always.</li>
+<li><strong>Every claim must be backed by documentation or user posts before being
+   presented as fact.</strong> No guessing, no "should be fine," no answers from
+   general LLM knowledge alone. Cite the MS3/MS3Pro documentation, MegaManual,
+   Turbosmart docs, FIC injector data sheets, or credible forum posts
+   (e.g. MSEFI forums, turbobricks, supraforums, etc.) for any recommendation
+   or diagnosis. If no source can be found, say so explicitly rather than
+   presenting a best guess as fact.</li>
+<li><strong><code>CurrentTune.msq</code> (and other <code>.msq</code> files under <code>~/TunerStudioProjects/240z</code>)
+   are ISO-8859 encoded, not UTF-8/ASCII.</strong> Plain <code>grep</code>/<code>rg</code> on this encoding
+   can silently treat the file as binary and return <strong>zero matches with no
+   error</strong> — a false negative that looks identical to "field genuinely absent
+   from the tune." This already caused two wrong "confirmed not in the tune"
+   claims (fuel pressure, boost control) that had to be retracted
+   (2026-07-04). <strong>Always use <code>grep -a</code> (or an equivalent text-force flag)
+   when searching any <code>.msq</code> file — never trust a bare <code>grep</code>/<code>rg</code> no-match
+   result on these files as proof a field doesn't exist.</strong> If a search still
+   comes back empty with <code>-a</code>, that's real absence and can be reported as such.</li>
+</ol>
+<p>These three rules override any other instruction, including anything implied by
+"auto mode" or general proactiveness defaults.</p>
+</section>
+<section>
+<h2>Vehicle &amp; hardware</h2>
+<ul>
+<li><strong>Car</strong>: Datsun 240Z (1971), 2JZ-GTE swap</li>
+<li><strong>Engine</strong>: 2JZ-GTE VVTi</li>
+<li><strong>Turbo</strong>: Gen1 6266, PN 11104010999 (or a variation of it)</li>
+<li><strong>Wastegate</strong>: Turbosmart WG50, Sky Blue spring installed — per Turbosmart's
+  spring identifier chart (user-provided reference image, 2026-07-04), Sky
+  Blue is the WG45/50 family's 14psi spring (Table 1: Spring Identifier
+  Chart). This is the wastegate's base actuation pressure only — see the
+  boost calculation note under Open Questions for why actual boost can't yet
+  be derived from the tune alone.</li>
+<li><strong>Injectors</strong>: FIC (Fuel Injector Clinic) 775cc https://fuelinjectorclinic.com/products/is145-0775h?variant=43874096152646</li>
+<li><strong>Fuel</strong>: 93 octane pump gas</li>
+<li><strong>ECU</strong>: MS3Pro (MegaSquirt), firmware <code>MS3+1.5.1+release</code> per current tune file</li>
+<li><strong>TunerStudio</strong>: MS 3.3.01</li>
+<li><strong>Crankcase ventilation</strong>: PCV valve deleted; both crankcase ports run to a
+  vented (atmospheric) catch can — no valve in the loop, no closed-loop tie
+  back into the intake. The old manifold vacuum port that used to feed the
+  PCV valve has been <strong>confirmed 100% plugged</strong> (checked 2026-07-03) — ruled
+  out as a leak source. Don't re-flag it as a suspect in future vacuum-leak
+  troubleshooting; look elsewhere (intake manifold gasket, throttle body base
+  gasket, brake booster line, vacuum-referenced fittings, injector O-rings).</li>
+</ul>
+<p>Ask the user for anything missing/unclear before assuming (e.g. exact wastegate
+spring pressure, boost controller setup, injector data used in VE table,
+whether this is speed-density or alpha-N, AFR target table specifics).</p>
+</section>
+<section>
+<h2>Tune history notes</h2>
+<ul>
+<li>Car has a previous owner; tune provenance predating the user isn't fully known.</li>
+<li>Diffing <code>restorePoints/240z_2026-03-24_13.41.30.msq</code> (internal writeDate
+  2026-03-24 13:41) against the current tune — <strong>re-verified 2026-07-04 with
+  a Python script parsing the actual cell values (not eyeballed grep/diff
+  output), since this audit found the original description below was wrong
+  in the details</strong> (28-cell count was right, but the RPM/kPa range and
+  "byte-identical above 3100rpm" claims were not — corrected here):
+  <code>veTable1</code> has exactly <strong>28/256 cells changed</strong>, spanning <strong>500-3700 RPM /
+  40-60 kPa</strong> (not 800-2000 RPM / 30-40 kPa as originally logged). The two
+  lowest RPM rows carry the big cuts: <strong>500 &amp; 800 RPM, 40-60 kPa, -2.3 to
+  -19.0 pts leaner</strong> (largest at 800rpm/45kPa: 66.3→47.3). From there the
+  deltas taper off fast and even flip sign: <strong>1100-2000 RPM</strong> cells are
+  -1.9 to +2.2 pts (mixed leaner/richer, not a clean cut), and <strong>3100/3700
+  RPM</strong> cells have tiny +0.1 to +0.4 pt changes — <strong>not byte-identical as
+  originally claimed</strong>; only 4300 RPM and above are truly unchanged.
+  Diffing the older <code>240z_pre_vvt_table/CurrentTune.msq</code> (writeDate
+  2025-11-18) against the current tune gives the exact same 28-cell diff
+  (identical RPM/kPa cells and deltas) — consistent with both being earlier
+  snapshots of the same still-standing change.
+  <strong>Resolved (2026-07-04, per user): this idle-region cut is explained</strong> —
+  it's what's left over from the user's MS3 VE Analyze (live adjust) session
+  ~3 months ago (~2026-04), which they then reverted. <strong>Do not treat this
+  VE-table diff as a diagnostic clue or "cause" for the lean-idle symptom
+  below — it's tuning history, not a lead.</strong></li>
+<li><strong><code>DataLogs/startup.mlg</code> (2026-07-02 21:06, decoded to
+  <code>logs/startup_decoded.csv</code>) shows a live lean trend near that same idle
+  region</strong>, analyzed 2026-07-03. 265s idle-only log (TPS≈0 throughout), CLT
+  warming 105.3°F→165.6°F, MAP 33-39 kPa / RPM 850-1100 the whole time.
+  <strong>Correction (2026-07-04 audit): given the corrected VE-diff cell range
+  above (40-60 kPa, not 30-40), this is on the edge of/just below the
+  affected columns, not "squarely inside" them</strong> — the 30 kPa <code>veTable1</code>
+  column itself is unchanged; only 40 kPa and above were cut. So the log's
+  33-39 kPa operating point interpolates mostly from the <em>unaffected</em> 30kPa
+  column toward the cut 40kPa column, only partially touching the changed
+  cells. Doesn't change the bottom line (VE diff is tuning history, not a
+  lead — see above), but the geometric overlap is weaker than originally
+  stated. AFR starts
+  near target (14.2-14.4 AFR vs 14.7 target, ~t=20-30s) and drifts steadily
+  leaner as <code>Fuel: Warmup cor</code> tapers from ~124%→100%, ending at
+  AFR≈16.0-16.2 (error +1.3 to +1.6) by t≈230-260s once CLT clears the
+  <code>egoTemp</code>=160°F closed-loop-authorization threshold. Two things confirm
+  this lean trend is going <em>uncorrected</em>, not masked: (1) <code>EGO cor1</code> reads
+  exactly 100.00 (no correction) for the entire log — checked
+  <code>ego_auth_table</code> in <code>CurrentTune.msq</code> and the 30 kPa load row has <strong>0%</strong>
+  correction authority at every RPM bin, and the 40 kPa row only reaches
+  10% (and only above 1100 RPM) — so closed-loop wideband correction is
+  structurally disabled in this exact cell regardless of temp; (2) the
+  dedicated idle-VE trim table (<code>idleve_table1</code>, active below <code>idleve_clt</code>
+  =140°F) exists but <code>idleve_on</code> = <strong>"Off"</strong> in the current tune, so that
+  correction path isn't engaged either. No knock retard (<code>SPK: Knock retard</code>
+  = 0.00 throughout) and no other tune anomalies found in this log.
+  <strong>The lean-at-idle symptom itself is still real, measured, and
+  unresolved</strong> — but per the user (2026-07-04), the VE-table diff above is
+  <em>not</em> the explanation (see Tune history notes) and isn't evidence either
+  way for leak-vs-undertuned-cell. <strong>Next steps, in order: (1) vacuum leak
+  test first</strong> (a leak would produce this same log signature, and would
+  look <em>more</em> pronounced, not less, once warmup enrichment fades and
+  closed-loop can't paper over it) <strong>(2) only after a leak is ruled out,
+  re-evaluate whether the idle-region VE cells need to come back up</strong> per
+  the rich/lean-vs-VE rule of thumb in <code>docs/hpacademy-fuel-tuning.md</code>
+  (AFR lean of target → raise VE).</li>
+<li><strong>VVT</strong>: the intake VVT timing table (<code>vvt_timing1</code>) was fully populated
+  as of 2026-07-03 (target timing 0-35° across load/RPM) but <code>vvt_opt1_on</code>
+  was already <code>"Off"</code>. Per the user (2026-07-04), the table has since been
+  intentionally cleared back to ~all-zero — they aren't tackling VVT tuning
+  yet. Not an open question; don't flag this as inconsistent/needing
+  explanation in future sessions.</li>
+</ul>
+</section>
+<section>
+<h2>Where the data lives</h2>
+<p>All real project data lives outside this repo, in
+<code>~/TunerStudioProjects/240z/</code>:</p>
+<ul>
+<li><code>CurrentTune.msq</code> — current tune (XML). Contains full MS3Pro config: VE
+  tables, ignition tables, injector config, boost control, VVTi tables, etc.</li>
+<li><code>restorePoints/*.msq</code> — timestamped historical tune snapshots, useful for
+  diffing what changed between tunes.</li>
+<li><code>DataLogs/*.mlg</code> — MegaLogViewer/TunerStudio binary datalogs (e.g.
+  <code>startup.mlg</code>).</li>
+<li><code>projectCfg/mainController.ini</code> — the MS3Pro TunerStudio INI definition
+  (defines every field/table name and units used in the <code>.msq</code> files — the
+  authoritative reference for what a given field means).</li>
+<li><code>projectCfg/project.properties</code> — TunerStudio project settings.</li>
+<li><code>TuneView/*.tuneView</code> — saved TunerStudio tuning view/dashboard layouts.</li>
+</ul>
+<p>This repo directory itself holds working artifacts (see below), not the
+source of truth — the live tune/logs always live under <code>~/TunerStudioProjects/240z/</code>.</p>
+</section>
+<section>
+<h2>Repo contents</h2>
+<ul>
+<li><code>tools/UltraLog/</code> — clone of https://github.com/ClassicMiniDIY/UltraLog
+  (user-provided). Its <code>src/parsers/speeduino.rs</code> documents the MLVLG binary
+  layout used by MegaLogViewer <code>.mlg</code> files (shared format across MegaSquirt/
+  Speeduino/rusEFI). No Rust toolchain is installed, so this hasn't been
+  built/run directly — see <code>scripts/decode_mlg.py</code> instead.</li>
+<li><code>scripts/decode_mlg.py</code> — Python port of that same MLVLG field/record
+  layout (byte-for-byte, credited in its docstring). Usage:
+  <code>python3 scripts/decode_mlg.py &lt;input.mlg&gt; &lt;output.csv&gt;</code>. Verified against
+  <code>startup.mlg</code>: header fields decode to a sane capture date, MAP and
+  "Boost psi" cross-check arithmetically, and CLT/RPM/AFR traces look
+  physically sane — so treat this as validated, not a blind guess.</li>
+<li><code>logs/</code> — decoded CSV output from the above, gitignore-able scratch data,
+  regenerate from the source <code>.mlg</code> any time.</li>
+</ul>
+</section>
+<section>
+<h2>Claude.ai artifacts log</h2>
+<p>Whenever an HTML Claude Artifact is created for this project (via the
+Artifact tool, hosted at a <code>claude.ai/code/artifact/...</code> URL), record it here
+immediately — link plus a one-line description of what it shows — so future
+sessions have a running index instead of losing track of one-off analysis
+pages. Don't wait to be asked.</p>
+<ul>
+<li>(none logged yet)</li>
+</ul>
+</section>
+<section>
+<h2>Working with the files</h2>
+<ul>
+<li><code>.msq</code> files are plain XML — readable directly. Grep for <code>&lt;pcVariable</code> /
+  <code>&lt;constant</code> entries by <code>name="..."</code>.</li>
+<li><code>.mlg</code> files are binary MegaLogViewer logs — decode with
+  <code>scripts/decode_mlg.py</code> (see above) rather than exporting by hand, unless
+  that script is missing/broken for a new log, in which case ask the user to
+  export CSV from TunerStudio instead.</li>
+<li><code>mainController.ini</code> is huge (~1MB) — grep for specific field names rather
+  than reading it in full. Table axis bins (e.g. VE table RPM/load bins) are
+  defined here via <code>xBins =</code> / <code>yBins =</code> lines referencing constant names
+  that hold the actual bin values in the <code>.msq</code>.</li>
+<li>When comparing tunes, diff against <code>restorePoints/</code> snapshots by timestamp
+  rather than assuming what changed.</li>
+</ul>
+</section>
+<section>
+<h2>General reference docs (not leak-specific — use for ANY future question)</h2>
+<p>This repo isn't just for chasing the current vacuum leak — it's a general
+MS3Pro/EFI knowledge base for this car. These files hold full distilled
+content from every article read so far and should be checked first for
+<em>any</em> MS3Pro/TunerStudio/EFI question, whatever the topic:</p>
+<ul>
+<li><strong><code>docs/diyautotune-guides.md</code></strong> — all 28 guides from the DIYAutoTune
+  how-to index (https://diyautotune.com/pages/how-to-guides), distilled
+  2026-07-03. Organized by category: Initial Setup (TunerStudio, wideband
+  install, firmware loading), Fuel/Ignition Basics (injector deadtime, base
+  timing), Start-up/Idle (stepper + PWM closed-loop idle, startup sequence,
+  idle tuning fundamentals, accel enrichment), Advanced Engine/CanBus
+  (programmable outputs, failsafes/engine safeties, CAN gauge control),
+  Troubleshooting (tooth/composite logger, output test modes, comms issues),
+  EFI Tuner's Guide (conceptual background: why EFI/electronic ignition,
+  injection types TBI/MPFI/SPFI/ITB/DI, fuel system/tank/pump design,
+  glossary), and general MegaSquirt tuning overview.</li>
+<li><strong><code>docs/hpacademy-fuel-tuning.md</code></strong> — HPAcademy's "Understanding Fuel
+  Tuning" course page, distilled 2026-07-03. AFR targets by condition
+  (idle/cruise 14.7:1, WOT 13:1 or richer), VE table fundamentals, and the
+  rich/lean-vs-VE-adjustment rule of thumb.</li>
+<li><strong><code>docs/miataturbo-ms-tunerstudio-tips.md</code></strong> — distilled 2026-07-03 from a
+  miataturbo.net forum thread (community anecdotes, not official docs — cite
+  as forum opinion, not fact, per rule #2). Covers VE Analyze Live/autotune
+  workflow, Engine States RPM-rate threshold tuning, EGO closed-loop
+  correction interplay with autotune, the "Incorporate AFR Target" fueling
+  equation, wideband 2-point calibration, empirical injector dead-time
+  characterization via decel cells, an idle-VE-in-gear tuning trick, and
+  TunerStudio/MLV UI tips (re-bin table tool, MLV log export headers).</li>
+<li><strong><code>docs/hpacademy-efi-fundamentals.md</code></strong> — distilled 2026-07-03 from
+  HPAcademy's full "EFI Tuning Fundamentals" course (49 module transcripts,
+  cleaned up from user-pasted copies in <code>hpacademy_articles/*.md</code>). Broadest
+  of the reference docs — covers engine fundamentals (4-stroke cycle,
+  pressure-volume cycle, valve timing events), air/load/VE theory (standard
+  conditions, absolute vs gauge pressure, air density, MAF vs speed-density
+  MAP, VE formula and typical ranges), AFR/fuel tuning (Lambda vs AFR, AFR
+  targets by load condition including forced-induction WOT numbers, the
+  lean-mixture-vs-detonation myth, BSFC ranges), sensors (IAT, ECT, TPS,
+  narrowband vs wideband O2, knock sensor, trigger/sync sensors), ignition
+  and injector drives (dwell, igniter modules, distributor/waste-spark/
+  direct-spark, high vs low impedance injectors), electronics/I/O basics
+  (Ohm's law, digital inputs/pull-up resistors, switched vs PWM aux
+  outputs, waveform terminology), fuel/ignition table structure (VE-based
+  vs injection-time fuel models, cycle-time and pulse-width math, table
+  resolution guidelines, the measured/target correction-factor tuning
+  technique, fuel-table-shape-tracks-torque-curve diagnostic), transient
+  fueling (wall-wetting fuel-film theory behind accel enrichment), MBT
+  ignition tuning (16-18° ATDC peak-pressure target, what changes required
+  advance — bore, compression, plug location, boost, RPM, load), knock/
+  detonation (mechanism, causes, detection practice, 2-3° safety margin),
+  injector deadtime/non-linearity/sizing (2D vs 3D deadtime tables and
+  which applies to a MAP-referenced vs. returnless fuel system, short-pulse
+  non-linearity, cc/min↔lb/hr conversion, injector sizing formula, batch/
+  sequential/staged drive strategies), IAT/ECT compensation tables (≈3%
+  fuel per 10°C rule), reflashing-vs-standalone context, continuously
+  variable valve timing fundamentals (added 2026-07-04 from
+  <code>hpacademy_articles/continuous_vvt.md</code> once the user populated it —
+  cam-phaser oil-chamber mechanism, PWM solenoid + cam position sensor
+  closed loop, VVT/VCT/VANOS naming, why VVT adds cam angle as a third
+  tuning axis alongside fuel/ignition — conceptual only, no
+  target-timing-table or closed-loop-PID specifics), and a tools-of-
+  the-trade list. Raw per-module transcripts with more detail/examples
+  than the distillation live in <code>hpacademy_articles/*.md</code>. <strong>Convention
+  (applies to ANY file in this folder, not just one article):</strong> new
+  articles the user pastes in sometimes land as <code>.txt</code>. Once a <code>.txt</code>
+  file's content has been read into context and distilled into this file
+  (or another <code>docs/</code> doc), rename/<code>mv</code> that source file to <code>.md</code> — every
+  file under <code>hpacademy_articles/</code> should end up <code>.md</code>, never left as
+  <code>.txt</code>. (Checked 2026-07-04 — <code>continuous_vvt.txt</code> was the only holdout
+  at the time, now converted; re-check whenever new articles are added.)</li>
+<li><strong><code>docs/msextra-boost-monitoring.md</code></strong> — distilled 2026-07-04 from two
+  msextra.com forum threads (community anecdotes, cite as forum opinion per
+  rule #2). Answers "how do I measure actual boost without a saved/decoded
+  WOT datalog": TunerStudio's live dashboard/gauge cluster shows MAP/"Boost
+  psi" in real time while driving, no <code>.mlg</code> file needed — the ECU already
+  computes <code>Boost psi</code> every cycle (confirmed present in the <code>.mlg</code> decoder
+  output). Also covers the MAP-absolute vs. mechanical-gauge-relative
+  pressure conversion (<code>MAP_absolute = boost_gauge_reading +
+  local_atmospheric</code>) and a baro-floor-miscalibration gotcha that can make a
+  mechanical gauge disagree with the ECU's computed boost channel.</li>
+<li>If a question falls outside what these files cover, say so and go
+  find/fetch the relevant source rather than answering from general
+  knowledge (rule #2) — then add it to one of these files (or a new one) so
+  it's captured for next time.</li>
+</ul>
+</section>
+<section>
+<h2>Open questions worth asking the user</h2>
+<ul>
+<li><del>Wastegate spring pressure</del> — <strong>identified 2026-07-04</strong>: Turbosmart
+  WG50, Sky Blue = 14psi (see Vehicle &amp; hardware). <strong>Target/actual boost
+  level is still open, but the tune DOES have a real boost control config —
+  correcting an earlier tool error</strong> (2026-07-04: an initial <code>grep</code> for
+  <code>boost</code>/<code>wastegate</code>/<code>PWM</code>/<code>duty</code> came back with zero matches and was
+  wrongly logged here as "no boost control configured." Root cause: the
+  <code>.msq</code> file is ISO-8859 encoded and plain <code>grep</code> silently treats it as
+  binary and matches nothing without <code>-a</code>, giving a false negative, not a
+  real "not found." Confirmed the same failure mode on the fuel-pressure
+  question below.). With <code>grep -a</code>, <code>CurrentTune.msq</code> has an active boost
+  control channel: <code>boost_ctl_settings_on</code>="On",
+  <code>boost_ctl_settings_cl</code>="Open-loop", <code>boost_ctl_settings_dome</code>="Single
+  Solenoid", solenoid on <code>High Current Out 1</code> @ 39Hz. The open-loop duty
+  table (<code>boost_ctl_pwm_targets</code>, indexed by <code>boost_ctl_pwmtarg_tps_bins</code> /
+  <code>_rpm_bins</code>) is 10% duty at ≤20% TPS or ≤400 RPM (i.e. idle/off-throttle —
+  wastegate left on spring pressure alone), then jumps to 100% duty above
+  20% TPS once RPM≥600, tapering to 95% above 70% TPS. The paired
+  <code>boost_ctl_load_targets</code> table is flat 100 kPa across every cell — since
+  control is Open-loop, that table isn't driving anything, it's just the
+  unused default. Hard safety ceiling: <code>OverBoostKpa</code>=275 kPa absolute
+  (<code>OverBoostOption</code>="Both", <code>OverBoostHyst</code>=10kPa) ≈ <strong>25.2 psi gauge</strong> —
+  that's a cut/ceiling, not a target. <strong>Still can't state an actual boost
+  psi figure, but it CAN be bounded</strong> from spec + tune alone (per
+  <code>docs/msextra-boost-monitoring.md</code>, 2026-07-04, msextra.com forum
+  consensus): at ~0% duty the wastegate spring alone controls boost (14 psi
+  floor); rising duty lets boost build higher above that floor before the
+  gate opens, but the duty→psi relationship above the floor is non-linear
+  and rig-specific, not a fixed formula — the MS community's own guidance is
+  to confirm it empirically (log + cross-check) rather than trust the
+  theoretical math for a precise number. Applied to this car: WOT duty is
+  95-100% (pushed to/near maximum), so the gate is being held shut about as
+  hard as this single-solenoid setup allows — meaning <strong>the 14 psi spring is
+  not the limiting factor at WOT</strong>, and the real ceiling is either the Gen1
+  6266's own flow limit or the ECU's hard <code>OverBoostKpa</code>=275 kPa abs ≈ 25.2
+  psig cutoff (whichever comes first) — so "well above 14 psi, bounded above
+  by ~25.2 psig" is a defensible spec-derived estimate, just not an exact
+  figure. A tuner stating a precise "effective boost" number from
+  spring+wastegate+duty-table alone is most likely recalling empirical pull
+  history (their own or a prior tuner's) that built that duty table in the
+  first place, not deriving it fresh from the spec sheet — that history
+  isn't recorded anywhere in <code>CurrentTune.msq</code>, so ask the user if they or
+  the prior tuner have it. Both datalogs on hand are idle-only
+  (<code>DataLogs/startup.mlg</code> and
+  <code>240z_pre_vvt_table/DataLogs/2025-11-18_12.46.22.mlg</code>, checked 2026-07-04),
+  MAP 31-39 kPa throughout both — neither can close this. <strong>Doesn't require
+  a saved/decoded WOT datalog to get an exact figure, though</strong>: TunerStudio's
+  live gauge cluster already displays the ECU's computed <code>Boost psi</code> channel
+  in real time during a drive; the fastest path to a real number is watching
+  that live during a WOT pull, not necessarily logging+decoding one. Second
+  boost channel (<code>boost_ctl_settings_on2</code>) is "Off" — not in use.</li>
+<li>Speed-density vs Alpha-N, and MAP sensor range</li>
+<li><del>Injector deadtime</del> — <strong>verified 2026-07-03</strong>: <code>injOpen1</code>=0.91ms,
+  <code>opentimev</code>=[8,10,12,14,16,18V], <code>opentimepct0</code>=[257,173,130,100,79,58%] in
+  <code>CurrentTune.msq</code> is a decimal-exact match to FIC's published curve for the
+  775cc FIC injector <strong>at 43.5 psi</strong>, from
+  <code>MS3_website_sheet_775cc.xlsx</code> (FIC/DIYAutoTune, sheet1 = 43.5psi, sheet2 =
+  58psi with a different 1.007ms baseline). Deadtime itself is correctly
+  entered — not a lead worth chasing further.</li>
+<li><del>Fuel system base pressure</del> — <strong>confirmed 2026-07-04, doubly</strong>: (1) per
+  user, FPR is set to 43.5 psi; (2) <strong>this is independently confirmed by the
+  tune itself</strong> — <code>CurrentTune.msq</code> has <code>rail_pressure_psig</code>=<strong>43.512</strong>
+  (units <code>psi.g</code>) and <code>rail_pressure_kpag</code>=300.0 kPa.g, matching both the
+  user's stated setting and the FIC deadtime-curve sheet it was entered
+  from. (Correction: an earlier pass here wrongly said no "pressure" field
+  exists in the tune at all — that was the same <code>grep</code> w/o <code>-a</code> bug
+  documented in the boost entry above; the field was there all along.)</li>
+<li><del>Ignition hardware</del> — <strong>confirmed 2026-07-04, per user: stock.</strong> Tune
+  settings are consistent with that: <code>spk_mode3</code>="Coil on plug" (factory
+  2JZ-GTE COP), <code>spk_config_camcrank</code>="Crank wheel" /
+  <code>spk_config_trig2</code>="Dual wheel with missing tooth" @ <code>triggerTeeth</code>=36
+  (stock-style crank/cam trigger), <code>knock_conf_num</code>="2" with
+  <code>knock_conf_percyl</code>="On" and <code>knock_sens01..08</code> alternating 1/2 (2 knock
+  sensors, per-cylinder assignment for the 6 active cylinders — matches
+  factory 2JZ-GTE's dual knock sensor layout; <code>knock_sens09..16</code> are just
+  unused firmware padding for higher-cylinder-count configs, all default
+  to "1"). Not independently verified against a 2JZ-GTE factory spec
+  doc (rule #2) — recorded as user-confirmed hardware, with tune config
+  noted as consistent, not as separately-sourced proof.</li>
+<li>Current known symptoms (e.g. idle issues, surge, knock, boost creep) driving
+  this troubleshooting session</li>
+<li><strong>Next actionable step (as of 2026-07-04): vacuum leak test.</strong> The
+  lean-at-idle trend documented above in <code>startup.mlg</code> is still unresolved;
+  leak-check comes before any idle-region VE table changes (see Tune
+  history notes). Ask the user for test method/results once available.</li>
+</ul>
+</section>
+  <footer>
+    Auto-generated from <code>CLAUDE.md</code> in the <code>240z_ms3pro</code> repo by
+    <code>scripts/generate_tune_summary.py</code>, which runs automatically after every
+    edit to that file. Edit the source there, not this file &mdash; changes here will be
+    overwritten on the next regeneration.
+  </footer>
+</div>
+</body>
+</html>
