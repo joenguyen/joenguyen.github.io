@@ -110,7 +110,7 @@ footer p{margin:0 0 6px;}
   <div class="eyebrow">Tuning Knowledge Base</div>
   <h1>240Z MS3Pro Tuning Assistant</h1>
   <div class="meta">
-    <span>Generated <code>2026-07-06 09:08 CDT</code></span>
+    <span>Generated <code>2026-07-06 09:10 CDT</code></span>
     <span>Commit <code>bec5701</code> (+ uncommitted <code>CLAUDE.md</code>, <code>docs/tune_summary_style_guide.md</code> edits)</span>
     <span>Source <code>CLAUDE.md</code></span>
   </div>
@@ -152,7 +152,7 @@ footer p{margin:0 0 6px;}
   <li><strong>Fuel</strong>: 93 octane pump gas</li>
   <li><strong>ECU</strong>: MS3Pro (MegaSquirt), firmware <code>MS3+1.5.1+release</code> per current tune file</li>
   <li><strong>TunerStudio</strong>: MS 3.3.01</li>
-  <li><strong>Crankcase ventilation</strong>: PCV valve deleted; both crankcase ports run to a vented (atmospheric) catch can — no valve in the loop, no closed-loop tie back into the intake. The old manifold vacuum port that used to feed the PCV valve has been <strong>confirmed 100% plugged</strong> (checked 2026-07-03) — ruled out as a leak source. Don't re-flag it as a suspect in future vacuum-leak troubleshooting; look elsewhere (intake manifold gasket, throttle body base gasket, brake booster line, vacuum-referenced fittings, injector O-rings).</li>
+  <li><strong>Crankcase ventilation</strong>: PCV valve deleted; both crankcase ports run to a vented (atmospheric) catch can — no valve in the loop, no closed-loop tie back into the intake. The old manifold vacuum port that used to feed the PCV valve is confirmed 100% plugged (checked 2026-07-03).</li>
 </ul>
 <p>Ask the user for anything missing/unclear before assuming (e.g. whether this is speed-density or alpha-N, AFR target table specifics).</p>
 
@@ -204,8 +204,8 @@ footer p{margin:0 0 6px;}
 </section>
 
 <section id="reference-docs">
-<h2>General reference docs (not leak-specific — use for ANY future question)</h2>
-<p>This repo isn't just for chasing the current vacuum leak — it's a general MS3Pro/EFI knowledge base for this car. These files hold full distilled content from every article read so far and should be checked first for <em>any</em> MS3Pro/TunerStudio/EFI question, whatever the topic:</p>
+<h2>General reference docs (use for ANY future question)</h2>
+<p>This repo isn't just for one specific investigation — it's a general MS3Pro/EFI knowledge base for this car. These files hold full distilled content from every article read so far and should be checked first for <em>any</em> MS3Pro/TunerStudio/EFI question, whatever the topic:</p>
 <ul>
   <li><strong><code>docs/diyautotune-guides.md</code></strong> — all 28 guides from the DIYAutoTune how-to index, distilled 2026-07-03. Organized by category: Initial Setup (TunerStudio, wideband install, firmware loading), Fuel/Ignition Basics (injector deadtime, base timing), Start-up/Idle (stepper + PWM closed-loop idle, startup sequence, idle tuning fundamentals, accel enrichment), Advanced Engine/CanBus (programmable outputs, failsafes/engine safeties, CAN gauge control), Troubleshooting (tooth/composite logger, output test modes, comms issues), EFI Tuner's Guide (conceptual background: why EFI/electronic ignition, injection types TBI/MPFI/SPFI/ITB/DI, fuel system/tank/pump design, glossary), and general MegaSquirt tuning overview.</li>
   <li><strong><code>docs/hpacademy-fuel-tuning.md</code></strong> — HPAcademy's "Understanding Fuel Tuning" course page, distilled 2026-07-03. AFR targets by condition (idle/cruise 14.7:1, WOT 13:1 or richer), VE table fundamentals, and the rich/lean-vs-VE-adjustment rule of thumb.</li>
@@ -368,7 +368,7 @@ footer p{margin:0 0 6px;}
 </section>
 
 <footer>
-<p>This page is auto-generated from <code>CLAUDE.md</code> by an AI agent hook — don't hand-edit directly, edit <code>CLAUDE.md</code> (or <code>docs/tune_summary_style_guide.md</code> for the look) and it regenerates. Generated 2026-07-06 09:08 CDT.</p>
+<p>This page is auto-generated from <code>CLAUDE.md</code> by an AI agent hook — don't hand-edit directly, edit <code>CLAUDE.md</code> (or <code>docs/tune_summary_style_guide.md</code> for the look) and it regenerates. Generated 2026-07-06 09:10 CDT.</p>
 <p>The "Live Tune Reference Tables" section above is sourced live and read-only from the local TunerStudio project's <code>CurrentTune.msq</code> by <code>scripts/render_tune_tables.py</code> — it is not authored/interpreted, just pulled straight from the tune file's numbers.</p>
 </footer>
 
