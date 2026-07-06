@@ -110,7 +110,7 @@ footer p{margin:0 0 6px;}
   <div class="eyebrow">Tuning Knowledge Base</div>
   <h1>240Z MS3Pro Tuning Assistant</h1>
   <div class="meta">
-    <span>Generated <code>2026-07-05 22:47 CDT</code></span>
+    <span>Generated <code>2026-07-05 23:23 CDT</code></span>
     <span>Commit <code>bec5701</code> (+ uncommitted <code>CLAUDE.md</code> edits)</span>
     <span>Source <code>CLAUDE.md</code></span>
   </div>
@@ -148,6 +148,7 @@ footer p{margin:0 0 6px;}
   <li><strong>Wastegate</strong>: Turbosmart WG50, Sky Blue spring installed — per Turbosmart's spring identifier chart (user-provided reference image, 2026-07-04), Sky Blue is the WG45/50 family's 14psi spring (Table 1: Spring Identifier Chart). This is the wastegate's base actuation pressure only — see the boost calculation note under <a href="#investigation-log">Investigation log</a> for why actual boost can't yet be derived from the tune alone.</li>
   <li><strong>Boost control solenoid</strong>: AMP (AMP EFI / AMP Engine Management) 3-port electronic boost control solenoid — physically confirmed installed (user-provided photo, 2026-07-05), label reads "3 PORT BOOST SOLENOID / VAC TO 120 PSI." Matches AMP's published EBC Solenoid Kit spec (max 125psi, 19.5-40Hz operating range, explicitly listed MS3Pro-compatible — see <code>docs/ampefi-boost-solenoid.md</code>), which brackets the tune's 39Hz drive frequency on <code>High Current Out 1</code>. This is now hardware-confirmed, not just inferred from the <code>.msq</code> config — see <a href="#investigation-log">Investigation log</a> for how the two line up (one physical solenoid = <code>boost_ctl_settings_dome</code>="Single Solenoid", not a dual-solenoid setup).</li>
   <li><strong>Injectors</strong>: FIC (Fuel Injector Clinic) 775cc</li>
+  <li><strong>Fuel pump</strong>: TI Automotive 39/50 DCSS high-performance in-tank pump, model <code>F90000262</code> (manufacturer datasheet, distributed via Tanks Inc; rated for engines over 500HP). See the fuel-pressure entry under <a href="#investigation-log">Investigation log</a> for its full flow-vs-pressure curve and how it bears on the 18psi-boost fuel pressure symptom.</li>
   <li><strong>Fuel</strong>: 93 octane pump gas</li>
   <li><strong>ECU</strong>: MS3Pro (MegaSquirt), firmware <code>MS3+1.5.1+release</code> per current tune file</li>
   <li><strong>TunerStudio</strong>: MS 3.3.01</li>
@@ -266,6 +267,24 @@ footer p{margin:0 0 6px;}
 </table>
 </div>
 <p><strong>Conclusion:</strong> nothing in the current tune causes or could correct this — it's structurally blind to fuel pressure by design. Points to a fuel-supply-hardware capacity issue (pump volume/voltage, line/filter restriction, or the FPR's boost-reference line/fitting), not a tunable ECU parameter.</p>
+<p><strong>Pump spec</strong> (manufacturer datasheet, found 2026-07-05): the car's fuel pump is a TI Automotive 39/50 DCSS in-tank high-performance pump, model <code>F90000262</code> (rated for engines over 500HP, per Tanks Inc's <code>6_series_fuel_pump_flow.pdf</code>). Its own flow-vs-pressure curve:</p>
+<div class="tablewrap">
+<table class="content-table">
+<tr><th>Pressure (psi)</th><th>Flow @ 12.0V (lph)</th><th>Current @ 12.0V (A)</th><th>Flow @ 13.5V (lph)</th><th>Current @ 13.5V (A)</th></tr>
+<tr><td>0</td><td>404.9</td><td>11.3</td><td>440.4</td><td>13.1</td></tr>
+<tr><td>20</td><td>402.9</td><td>11.3</td><td>441.7</td><td>13.2</td></tr>
+<tr><td>40</td><td>352.0</td><td>12.6</td><td>404.6</td><td>14.1</td></tr>
+<tr><td>60</td><td>287.9</td><td>14.1</td><td>346.6</td><td>15.6</td></tr>
+<tr><td>80</td><td>223.7</td><td>15.8</td><td>285.4</td><td>17.3</td></tr>
+<tr><td>90</td><td>189.6</td><td>16.6</td><td>252.7</td><td>18.1</td></tr>
+<tr><td>100</td><td>97.3</td><td>17.5</td><td>155.3</td><td>18.8</td></tr>
+<tr><td>110</td><td>32.1</td><td>18.3</td><td>96.3</td><td>19.7</td></tr>
+<tr><td>120</td><td>2.4</td><td>18.6</td><td>17.2</td><td>20.2</td></tr>
+<tr><td>Shutoff</td><td>2.4</td><td>18.7</td><td>2.5</td><td>20.2</td></tr>
+</table>
+</div>
+<p class="table-meta">Condensed to 20psi steps here; the datasheet has full 10psi-step data.</p>
+<p><strong>What this changes:</strong> flow only tapers mildly through 80-90 psi at either voltage — the pump doesn't fall off a cliff until roughly 100-120 psi, where flow collapses to near-zero. So <strong>if this car's actual rail pressure at 18psi boost lands anywhere near a typical FPR base pressure (30-60psi) plus 18psi (i.e., roughly 50-80psi total), this pump's own spec says it shouldn't be anywhere near its limit</strong> — which points the "still open" question below more toward voltage sag or a restrictive fitting (both already flagged from forum precedent below) than toward the pump itself being undersized for the job. <strong>Missing to close this out:</strong> the car's actual FPR base/deadhead pressure isn't documented anywhere in <code>CurrentTune.msq</code> (no sensor, per the tune-side findings above) — ask the user what the FPR is set/rated for, so the expected total rail pressure at 18psi boost can be checked against this curve.</p>
 <p><strong>Community/vendor precedent</strong> (forum opinion, not official spec, per rule #2), found 2026-07-05:</p>
 <ul>
   <li><strong>DIYAutoTune's MS3Pro failsafe guide</strong> confirms the sensor-based auto-compensation and shutdown features exist, but they explicitly require the fuel pressure sensor connection this car doesn't have.</li>
@@ -273,7 +292,7 @@ footer p{margin:0 0 6px;}
   <li><strong>HPAcademy forum — fuel pressure not rising with boost</strong>: traced a pressure ceiling to fuel pump <em>voltage</em> sag under load (13.7V→12.1-12.3V), citing the rule that a 10% pump voltage drop costs ~20% flow. Diagnosed by measuring voltage at the pump connector itself under boost, not at the battery.</li>
   <li><strong>Fuelab's boost-referenced-FPR writeup</strong>: documents "regulation slope" — even a healthy FPR droops a few psi per GPM of demand increase, because less fuel returns to tank at high flow. A normal/minor effect, not by itself an explanation for a hard ceiling at 18psi.</li>
 </ul>
-<p><strong>Still open:</strong> which specific hardware factor (pump voltage, line/fitting restriction, or FPR reference line) is responsible on this car — needs a pump-voltage-under-boost measurement or a mechanical fuel pressure gauge test, neither of which can be determined from the <code>.msq</code> alone.</p>
+<p><strong>Still open:</strong> which specific hardware factor (pump voltage, line/fitting restriction, or FPR reference line) is responsible on this car — needs a pump-voltage-under-boost measurement, the FPR's base/deadhead pressure (to check total rail pressure at 18psi boost against the pump's own flow-vs-pressure curve above), or a mechanical fuel pressure gauge test — none of which can be determined from the <code>.msq</code> alone.</p>
 <p><strong>Sources:</strong></p>
 <ul>
   <li><a href="https://diyautotune.com/blogs/how-to-guides/ms3pro-failsafe-features-engine-safeties">MS3Pro Failsafe Features &amp; Engine Safeties – DIYAutoTune</a></li>
@@ -281,6 +300,7 @@ footer p{margin:0 0 6px;}
   <li><a href="https://www.hpacademy.com/forum/general-tuning-discussion/show/fuel-pressure-dropping-off-with-increased-boost/">Fuel pressure dropping off with increased boost – HPAcademy forum</a></li>
   <li><a href="https://www.hpacademy.com/forum/general-tuning-discussion/show/fuel-pressure-not-rising-with-boost">Fuel pressure not rising with boost – HPAcademy forum</a></li>
   <li><a href="https://fuelab.com/n-41-1-1-boost-reference-fuel-pressure-regulators.html">1:1 Boost Reference Fuel Pressure Regulators – Fuelab</a></li>
+  <li><a href="https://www.tanksinc.com/pdf/6_series_fuel_pump_flow.pdf">39/50 DCSS High-Performance In-Tank Fuel Pump (Model F90000262) – TI Automotive datasheet, via Tanks Inc</a></li>
 </ul>
 </section>
 
@@ -380,7 +400,7 @@ footer p{margin:0 0 6px;}
 </section>
 
 <footer>
-<p>This page is auto-generated from <code>CLAUDE.md</code> by an AI agent hook — don't hand-edit directly, edit <code>CLAUDE.md</code> (or <code>docs/tune_summary_style_guide.md</code> for the look) and it regenerates. Generated 2026-07-05 22:47 CDT.</p>
+<p>This page is auto-generated from <code>CLAUDE.md</code> by an AI agent hook — don't hand-edit directly, edit <code>CLAUDE.md</code> (or <code>docs/tune_summary_style_guide.md</code> for the look) and it regenerates. Generated 2026-07-05 23:23 CDT.</p>
 <p>The "Live Tune Reference Tables" section above is sourced live and read-only from the local TunerStudio project's <code>CurrentTune.msq</code> by <code>scripts/render_tune_tables.py</code> — it is not authored/interpreted, just pulled straight from the tune file's numbers.</p>
 </footer>
 
