@@ -107,8 +107,8 @@ footer p{margin:0 0 6px;}
   <div class="eyebrow">Tuning Knowledge Base</div>
   <h1>240Z MS3Pro Tuning Assistant</h1>
   <div class="meta">
-    <span>Generated <code>2026-07-05 22:15 CDT</code></span>
-    <span>Commit <code>6f7ede3</code> (+ uncommitted <code>CLAUDE.md</code> edits)</span>
+    <span>Generated <code>2026-07-05 22:37 CDT</code></span>
+    <span>Commit <code>bec5701</code> (+ uncommitted <code>CLAUDE.md</code> edits)</span>
     <span>Source <code>CLAUDE.md</code></span>
   </div>
 </header>
@@ -157,10 +157,35 @@ footer p{margin:0 0 6px;}
 <h2>Tune history notes</h2>
 <ul>
   <li>Car has a previous owner; tune provenance predating the user isn't fully known.</li>
-  <li>Diffing a historical restore-point snapshot (internal writeDate 2026-03-24 13:41) against the current tune — <strong>re-verified 2026-07-04 with a Python script parsing the actual cell values (not eyeballed grep/diff output), since this audit found the original description below was wrong in the details</strong> (28-cell count was right, but the RPM/kPa range and "byte-identical above 3100rpm" claims were not — corrected here): <code>veTable1</code> has exactly <strong>28/256 cells changed</strong>, spanning <strong>500-3700 RPM / 40-60 kPa</strong> (not 800-2000 RPM / 30-40 kPa as originally logged). The two lowest RPM rows carry the big cuts: <strong>500 &amp; 800 RPM, 40-60 kPa, -2.3 to -19.0 pts leaner</strong> (largest at 800rpm/45kPa: 66.3→47.3). From there the deltas taper off fast and even flip sign: <strong>1100-2000 RPM</strong> cells are -1.9 to +2.2 pts (mixed leaner/richer, not a clean cut), and <strong>3100/3700 RPM</strong> cells have tiny +0.1 to +0.4 pt changes — <strong>not byte-identical as originally claimed</strong>; only 4300 RPM and above are truly unchanged. A second historical snapshot (since removed from this repo per the user 2026-07-05) gave the exact same 28-cell diff against the current tune (identical RPM/kPa cells and deltas) when checked — consistent with both being earlier snapshots of the same still-standing change. <strong>Resolved (2026-07-04, per user): this idle-region cut is explained</strong> — it's what's left over from the user's MS3 VE Analyze (live adjust) session ~3 months ago (~2026-04), which they then reverted. <strong>Do not treat this VE-table diff as a diagnostic clue or "cause" for the lean-idle symptom below — it's tuning history, not a lead.</strong></li>
-  <li><strong>A decoded startup datalog shows a live lean trend near that same idle region</strong>, analyzed 2026-07-03. 265s idle-only log (TPS≈0 throughout), CLT warming 105.3°F→165.6°F, MAP 33-39 kPa / RPM 850-1100 the whole time. <strong>Correction (2026-07-04 audit): given the corrected VE-diff cell range above (40-60 kPa, not 30-40), this is on the edge of/just below the affected columns, not "squarely inside" them</strong> — the 30 kPa <code>veTable1</code> column itself is unchanged; only 40 kPa and above were cut. So the log's 33-39 kPa operating point interpolates mostly from the unaffected 30kPa column toward the cut 40kPa column, only partially touching the changed cells. Doesn't change the bottom line (VE diff is tuning history, not a lead — see above), but the geometric overlap is weaker than originally stated. AFR starts near target (14.2-14.4 AFR vs 14.7 target, ~t=20-30s) and drifts steadily leaner as <code>Fuel: Warmup cor</code> tapers from ~124%→100%, ending at AFR≈16.0-16.2 (error +1.3 to +1.6) by t≈230-260s once CLT clears the <code>egoTemp</code>=160°F closed-loop-authorization threshold. Two things confirm this lean trend is going uncorrected, not masked: (1) <code>EGO cor1</code> reads exactly 100.00 (no correction) for the entire log — checked <code>ego_auth_table</code> in <code>CurrentTune.msq</code> and the 30 kPa load row has <strong>0%</strong> correction authority at every RPM bin, and the 40 kPa row only reaches 10% (and only above 1100 RPM) — so closed-loop wideband correction is structurally disabled in this exact cell regardless of temp; (2) the dedicated idle-VE trim table (<code>idleve_table1</code>, active below <code>idleve_clt</code>=140°F) exists but <code>idleve_on</code> = <strong>"Off"</strong> in the current tune, so that correction path isn't engaged either. No knock retard (<code>SPK: Knock retard</code> = 0.00 throughout) and no other tune anomalies found in this log. <del>The lean-at-idle symptom itself is still real, measured, and unresolved</del> — <strong>resolved 2026-07-05, per user</strong>: user smoothed the <code>veTable1</code> idle-region cells directly in TunerStudio (not a Claude edit — consistent with rule #1) and idle is smooth, no lean trend, as far as the user knows. This was done without running the queued vacuum-leak test first, so it doesn't independently rule a leak in or out — the fix could mean there was no leak (richer VE alone closed the gap), or a leak still exists but is now masked by the added fuel. Not chased further since the symptom that motivated the leak test is gone. <strong>Corroborating data point (2026-07-05)</strong>: fetched a real published MegaSquirt base map for the same engine family — MSPNP's official 2JZ-GTE Twin Turbo Supra MAP-sensor base map (a vendor base map, not a factory Toyota ECU dump) — and grepped its actual <code>veTable1</code> cell values (RPM cols 700-7500, kPa rows 10-225). The low-RPM columns (700/900/1200/1400 rpm) across every load row step up smoothly (cell-to-cell deltas ~1-5pts), no cliff anywhere resembling this tune's old -19pt cut. Supports smooth VE being the structurally-expected shape for this engine, not direct proof about this specific car's leak status.</li>
-  <li><strong>VVT</strong>: the intake VVT timing table (<code>vvt_timing1</code>) was fully populated as of 2026-07-03 (target timing 0-35° across load/RPM) but <code>vvt_opt1_on</code> was already <code>"Off"</code>. Per the user (2026-07-04), the table has since been intentionally cleared back to ~all-zero — they aren't tackling VVT tuning yet. Not an open question; don't flag this as inconsistent/needing explanation in future sessions.</li>
 </ul>
+
+<h3><code>veTable1</code> idle-region diff — resolved 2026-07-04</h3>
+<p><strong>What was compared:</strong> a historical restore-point snapshot (internal writeDate 2026-03-24 13:41) vs. the current tune. Re-verified 2026-07-04 with a Python script parsing actual cell values (not eyeballed grep/diff output) — the original description here was wrong in the details (28-cell count was right, but the RPM/kPa range and "byte-identical above 3100rpm" claims were not; corrected below).</p>
+<p><strong>Findings:</strong></p>
+<ul>
+  <li><code>veTable1</code> has exactly <strong>28/256 cells changed</strong>, spanning <strong>500-3700 RPM / 40-60 kPa</strong> (not 800-2000 RPM / 30-40 kPa as originally logged).</li>
+  <li><strong>500 &amp; 800 RPM, 40-60 kPa</strong> carry the big cuts: -2.3 to -19.0 pts leaner (largest at 800rpm/45kPa: 66.3→47.3).</li>
+  <li><strong>1100-2000 RPM</strong>: -1.9 to +2.2 pts — mixed leaner/richer, not a clean cut.</li>
+  <li><strong>3100/3700 RPM</strong>: tiny +0.1 to +0.4 pt changes — <strong>not byte-identical as originally claimed</strong>; only 4300 RPM and above are truly unchanged.</li>
+  <li>A second historical snapshot (since removed from this repo per the user 2026-07-05) gave the exact same 28-cell diff (identical RPM/kPa cells and deltas) — consistent with both being earlier snapshots of the same still-standing change.</li>
+</ul>
+<p><strong>Resolution (per user, 2026-07-04):</strong> this idle-region cut is leftover from the user's MS3 VE Analyze (live adjust) session ~3 months ago (~2026-04), which they then reverted. <strong>Do not treat this VE-table diff as a diagnostic clue or "cause" for the lean-idle symptom below — it's tuning history, not a lead.</strong></p>
+
+<h3>Startup lean-idle trend (<code>DataLogs/startup.mlg</code>) — resolved 2026-07-05</h3>
+<p><strong>The log:</strong> <code>DataLogs/startup.mlg</code> (2026-07-02 21:06, decoded to <code>logs/startup_decoded.csv</code>), analyzed 2026-07-03 — 265s idle-only log (TPS≈0 throughout), CLT warming 105.3°F→165.6°F, MAP 33-39 kPa / RPM 850-1100 the whole time.</p>
+<p><strong>Overlap with the VE diff above (correction, 2026-07-04 audit):</strong> given the corrected VE-diff cell range (40-60 kPa, not 30-40), this log's operating point is on the edge of/just below the affected columns, not "squarely inside" them — the 30 kPa <code>veTable1</code> column itself is unchanged; only 40 kPa and above were cut. So the log's 33-39 kPa point interpolates mostly from the unaffected 30kPa column toward the cut 40kPa column, only partially touching the changed cells. Doesn't change the bottom line (VE diff is tuning history, not a lead), but the geometric overlap is weaker than originally stated.</p>
+<p><strong>AFR trend:</strong> starts near target (14.2-14.4 AFR vs 14.7 target, ~t=20-30s) and drifts steadily leaner as <code>Fuel: Warmup cor</code> tapers from ~124%→100%, ending at AFR≈16.0-16.2 (error +1.3 to +1.6) by t≈230-260s once CLT clears the <code>egoTemp</code>=160°F closed-loop-authorization threshold.</p>
+<p><strong>Why the lean trend goes uncorrected, not masked:</strong></p>
+<ul>
+  <li><code>EGO cor1</code> reads exactly 100.00 (no correction) for the entire log — <code>ego_auth_table</code> in <code>CurrentTune.msq</code> shows the 30 kPa load row has <strong>0%</strong> correction authority at every RPM bin, and the 40 kPa row only reaches 10% (and only above 1100 RPM) — closed-loop wideband correction is structurally disabled in this exact cell regardless of temp.</li>
+  <li>The dedicated idle-VE trim table (<code>idleve_table1</code>, active below <code>idleve_clt</code>=140°F) exists but <code>idleve_on</code> = <strong>"Off"</strong> in the current tune, so that correction path isn't engaged either.</li>
+</ul>
+<p>No knock retard (<code>SPK: Knock retard</code> = 0.00 throughout) and no other tune anomalies found in this log.</p>
+<p><strong>Resolution (per user, 2026-07-05):</strong> user smoothed the <code>veTable1</code> idle-region cells directly in TunerStudio (not a Claude edit — consistent with rule #1) and idle is smooth, no lean trend, as far as the user knows. This was done without running the queued vacuum-leak test first, so it doesn't independently rule a leak in or out — the fix could mean there was no leak (richer VE alone closed the gap), or a leak still exists but is now masked by the added fuel. Not chased further since the symptom that motivated the leak test is gone.</p>
+<p><strong>Corroborating data point (2026-07-05):</strong> fetched a real published MegaSquirt base map for the same engine family — MSPNP's official 2JZ-GTE Twin Turbo Supra MAP-sensor base map (a vendor base map, not a factory Toyota ECU dump) — and grepped its actual <code>veTable1</code> cell values (RPM cols 700-7500, kPa rows 10-225). The low-RPM columns (700/900/1200/1400 rpm) across every load row step up smoothly (cell-to-cell deltas ~1-5pts), no cliff anywhere resembling this tune's old -19pt cut. Supports smooth VE being the structurally-expected shape for this engine, not direct proof about this specific car's leak status.</p>
+
+<h3>VVT timing table (<code>vvt_timing1</code>) — not an open question</h3>
+<p>The intake VVT timing table was fully populated as of 2026-07-03 (target timing 0-35° across load/RPM) but <code>vvt_opt1_on</code> was already <code>"Off"</code>. Per the user (2026-07-04), the table has since been intentionally cleared back to ~all-zero — they aren't tackling VVT tuning yet. Not an open question; don't flag this as inconsistent/needing explanation in future sessions.</p>
 </section>
 
 <section id="data-lives">
@@ -231,7 +256,7 @@ footer p{margin:0 0 6px;}
 
 <section>
 <h2>Live Tune Reference Tables</h2>
-<p>Pulled directly (read-only) from the live tune every time this page regenerates — not from CLAUDE.md prose, and not AI-interpreted. Color intensity is normalized per-table (darkest = highest value in that table's own range, shown above each table).</p><p class="table-meta">Axis convention: each table's row (Y/load) axis reads bottom-to-top ascending, like a graph — the lowest load/% value is the bottom row, increasing upward. The RPM/X axis stays left-to-right ascending.</p>
+<p>Pulled directly (read-only) from the live tune at <code>~/TunerStudioProjects/240z/CurrentTune.msq</code> every time this page regenerates &mdash; not from CLAUDE.md prose, and not AI-interpreted. Color intensity is normalized per-table (darkest = highest value in that table's own range, shown above each table).</p><p class="table-meta">Axis convention: each table's row (Y/load) axis reads bottom-to-top ascending, like a graph &mdash; the lowest load/% value is the bottom row, increasing upward. The RPM/X axis stays left-to-right ascending.</p>
 
 <h3>Fuel VE Table 1</h3>
 <p class="table-meta">Primary fuel table — VE% by RPM/load. See CLAUDE.md Tune history notes for the documented idle-region cut. &middot; units: <code>%</code> &middot; range in this tune: 50.3&ndash;110.3</p>
@@ -264,7 +289,7 @@ footer p{margin:0 0 6px;}
 
 
 <h3>Boost Control Duty (Open-Loop PWM Targets 1)</h3>
-<p class="table-meta">Wastegate solenoid duty % by RPM/TPS. See CLAUDE.md Investigation log — this is the table controlling actual boost behavior (Open-loop mode). &middot; units: <code>%</code> &middot; range in this tune: 10&ndash;100</p>
+<p class="table-meta">Wastegate solenoid duty % by RPM/TPS. See CLAUDE.md Open Questions — this is the table controlling actual boost behavior (Open-loop mode). &middot; units: <code>%</code> &middot; range in this tune: 10&ndash;100</p>
 <div class="tablewrap">
 <table class="heatgrid">
 <tr><th class='corner'>% \ rpm</th><th class='num'>500</th><th class='num'>1000</th><th class='num'>2000</th><th class='num'>3000</th><th class='num'>4000</th><th class='num'>5000</th><th class='num'>6000</th><th class='num'>7000</th></tr>
@@ -325,7 +350,7 @@ footer p{margin:0 0 6px;}
 </section>
 
 <footer>
-<p>This page is auto-generated from <code>CLAUDE.md</code> by an AI agent hook — don't hand-edit directly, edit <code>CLAUDE.md</code> (or <code>docs/tune_summary_style_guide.md</code> for the look) and it regenerates. Generated 2026-07-05 22:15 CDT.</p>
+<p>This page is auto-generated from <code>CLAUDE.md</code> by an AI agent hook — don't hand-edit directly, edit <code>CLAUDE.md</code> (or <code>docs/tune_summary_style_guide.md</code> for the look) and it regenerates. Generated 2026-07-05 22:37 CDT.</p>
 <p>The "Live Tune Reference Tables" section above is sourced live and read-only from the local TunerStudio project's <code>CurrentTune.msq</code> by <code>scripts/render_tune_tables.py</code> — it is not authored/interpreted, just pulled straight from the tune file's numbers.</p>
 </footer>
 
