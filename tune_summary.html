@@ -110,8 +110,8 @@ footer p{margin:0 0 6px;}
   <div class="eyebrow">Tuning Knowledge Base</div>
   <h1>240Z MS3Pro Tuning Assistant</h1>
   <div class="meta">
-    <span>Generated <code>2026-07-06 09:10 CDT</code></span>
-    <span>Commit <code>bec5701</code> (+ uncommitted <code>CLAUDE.md</code>, <code>docs/tune_summary_style_guide.md</code> edits)</span>
+    <span>Generated <code>2026-07-06 22:52 CDT</code></span>
+    <span>Commit <code>2710c1a</code> (+ uncommitted <code>CLAUDE.md</code> edits)</span>
     <span>Source <code>CLAUDE.md</code></span>
   </div>
 </header>
@@ -261,6 +261,14 @@ footer p{margin:0 0 6px;}
   <li><strong>Fuelab's boost-referenced-FPR writeup</strong>: documents "regulation slope" — even a healthy FPR droops a few psi per GPM of demand increase, because less fuel returns to tank at high flow. A normal/minor effect, not by itself an explanation for a hard ceiling at 18psi.</li>
 </ul>
 <p><strong>Still open:</strong> which specific hardware factor (pump voltage, line/fitting restriction, or FPR reference line) is responsible on this car — needs a pump-voltage-under-boost measurement, the FPR's base/deadhead pressure (to check total rail pressure at 18psi boost against the pump's own flow-vs-pressure curve above), or a mechanical fuel pressure gauge test — none of which can be determined from the <code>.msq</code> alone.</p>
+<p><strong>Diagnostic starting plan</strong> (proposed 2026-07-06, not yet run): in priority order, cheapest/fastest first — every step below is grounded in a source already cited for this entry, not a new claim:</p>
+<ol style="padding-left:22px;margin:0 0 14px;">
+  <li><strong>Mechanical fuel pressure gauge on the rail, logged through a full boost run.</strong> Directly answers what rail pressure actually does at 18psi boost — necessary because <code>fp_press_in</code>="Off" means there is no ECU channel for this (tune-side findings above). The resulting number is exactly the "missing to close this out" figure flagged above: compare it against the TI Automotive pump's flow-vs-pressure curve (doesn't taper meaningfully until ~100-120psi per its datasheet) to judge whether the pump itself is even in play.</li>
+  <li><strong>Pump voltage at the connector itself, under boost — not at the battery.</strong> Per the HPAcademy "fuel pressure not rising with boost" forum thread cited above, a 13.7V→12.1-12.3V sag under load was the root cause in that case, with the rule of thumb that a 10% pump voltage drop costs ~20% flow. Same test session as step 1.</li>
+  <li><strong>Return-line fuel flow rate</strong>, target ~3 L/min per the HPAcademy Nick Cox R32 GTR thread cited above, which traced the same boost-proportional pressure shortfall symptom to a restrictive fitting in the return line. Worth doing if steps 1-2 come back clean.</li>
+  <li><strong>FPR base/deadhead pressure and its boost-reference line/fitting</strong> — still an undocumented unknown (see "missing to close this out" above); ask the user for the FPR's rated static pressure, and visually check the reference line/fitting for the same restrictive-fitting failure mode described in the R32 GTR case in step 3.</li>
+</ol>
+<p>Steps 1 and 2 can be done in the same drive/dyno session; steps 3-4 depend on what that data shows.</p>
 <p><strong>Sources:</strong></p>
 <ul>
   <li><a href="https://diyautotune.com/blogs/how-to-guides/ms3pro-failsafe-features-engine-safeties">MS3Pro Failsafe Features &amp; Engine Safeties – DIYAutoTune</a></li>
@@ -368,7 +376,7 @@ footer p{margin:0 0 6px;}
 </section>
 
 <footer>
-<p>This page is auto-generated from <code>CLAUDE.md</code> by an AI agent hook — don't hand-edit directly, edit <code>CLAUDE.md</code> (or <code>docs/tune_summary_style_guide.md</code> for the look) and it regenerates. Generated 2026-07-06 09:10 CDT.</p>
+<p>This page is auto-generated from <code>CLAUDE.md</code> by an AI agent hook — don't hand-edit directly, edit <code>CLAUDE.md</code> (or <code>docs/tune_summary_style_guide.md</code> for the look) and it regenerates. Generated 2026-07-06 22:52 CDT.</p>
 <p>The "Live Tune Reference Tables" section above is sourced live and read-only from the local TunerStudio project's <code>CurrentTune.msq</code> by <code>scripts/render_tune_tables.py</code> — it is not authored/interpreted, just pulled straight from the tune file's numbers.</p>
 </footer>
 
