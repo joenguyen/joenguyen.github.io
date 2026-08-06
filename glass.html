@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glass Restoration — M18 15mm DA Reference</title>
+<style>
+  :root {
+    --bg: #1c1a17;
+    --bg-panel: #252220;
+    --ink: #ece6d9;
+    --ink-dim: #a89e8c;
+    --line: #3c3730;
+    --line-strong: #514a40;
+    --cut: #4fa3c4;
+    --cut-soft: #1c3540;
+    --polish: #7bb0d9;
+    --polish-soft: #1f2e38;
+    --focus: #4fa3c4;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", "Inter", Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono {
+    font-family: "IBM Plex Mono", "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  a { color: var(--focus); }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+  .wrap { max-width: 920px; margin: 0 auto; padding: 48px 24px 96px; }
+
+  .masthead {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 2px solid var(--ink); padding-bottom: 18px; margin-bottom: 6px;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .masthead .plate {
+    font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.12em;
+    color: var(--ink-dim); text-transform: uppercase; border: 1px solid var(--line-strong);
+    padding: 4px 9px; border-radius: 3px; white-space: nowrap;
+  }
+  h1 { font-size: clamp(28px, 4.2vw, 38px); font-weight: 800; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+  .kicker {
+    font-family: "IBM Plex Mono", monospace; font-size: 12.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--cut); margin: 0 0 8px; font-weight: 700;
+  }
+  .dek { color: var(--ink-dim); font-size: 15.5px; max-width: 64ch; margin: 14px 0 44px; }
+
+  section { margin-bottom: 56px; }
+  h2 {
+    font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--ink-dim); margin: 0 0 18px; display: flex; align-items: center; gap: 10px;
+  }
+  h2::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  .spec-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+  }
+  .spec-grid .cell { background: var(--bg-panel); padding: 16px 18px; }
+  .spec-grid .cell .label {
+    font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-dim); margin-bottom: 6px;
+  }
+  .spec-grid .cell .value { font-size: 15px; font-weight: 650; }
+  .spec-grid .cell .value.num { font-family: "IBM Plex Mono", monospace; }
+
+  .wf-steps { display: grid; gap: 14px; counter-reset: wf; }
+  .wf-step {
+    counter-increment: wf;
+    background: var(--bg-panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .wf-step .wf-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+  .wf-step .wf-head::before {
+    content: counter(wf);
+    font-family: "IBM Plex Mono", monospace; font-size: 11px; font-weight: 700;
+    color: var(--bg); background: var(--ink-dim); width: 22px; height: 22px; flex: none;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  }
+  .wf-step h3 { font-size: 16px; margin: 0; font-weight: 700; }
+  .wf-step .wf-desc { color: var(--ink-dim); font-size: 13.5px; margin: 0 0 14px 34px; }
+  .wf-products {
+    margin: 0 0 0 34px; padding: 0; list-style: none;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px;
+  }
+  .wf-products li {
+    border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px;
+    background: color-mix(in srgb, var(--ink) 3%, transparent);
+  }
+  .wf-products .brand {
+    font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--focus); font-weight: 700; display: block; margin-bottom: 2px;
+  }
+  .wf-products a { font-size: 13px; font-weight: 600; text-decoration: none; }
+  .wf-products a:hover { text-decoration: underline; }
+  .wf-products .why { display: block; color: var(--ink-dim); font-size: 11.5px; margin-top: 2px; }
+  .wf-step .table-scroll { margin-left: 34px; }
+  .wf-step .diagram-card { margin-left: 34px; }
+
+  .rating {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-family: "IBM Plex Mono", monospace; font-size: 10.5px; font-weight: 700;
+    color: var(--ink); background: color-mix(in srgb, var(--ink) 8%, transparent);
+    border: 1px solid var(--line-strong); border-radius: 4px; padding: 1px 6px; margin-top: 4px;
+  }
+  .rating::before { content: "★"; color: #e0b23c; }
+  .rating .count { color: var(--ink-dim); font-weight: 500; }
+  td .rating { margin-top: 2px; }
+
+  figure { margin: 0; }
+  .diagram-card { background: var(--bg-panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px; }
+  svg { display: block; width: 100%; height: auto; }
+  figcaption { font-size: 13px; color: var(--ink-dim); padding: 14px 10px 4px; max-width: 68ch; }
+
+  .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; background: var(--bg-panel); font-size: 13.5px; min-width: 560px; }
+  caption {
+    text-align: left; caption-side: top; padding: 14px 16px 0; font-size: 12px;
+    color: var(--ink-dim); font-family: "IBM Plex Mono", monospace;
+  }
+  thead th {
+    text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-dim); font-weight: 700; padding: 12px 16px; border-bottom: 1px solid var(--line-strong);
+    white-space: nowrap;
+  }
+  tbody td { padding: 13px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) { background: color-mix(in srgb, var(--ink) 3%, transparent); }
+  .rank { font-family: "IBM Plex Mono", monospace; font-weight: 700; color: var(--ink-dim); }
+  .num { font-family: "IBM Plex Mono", monospace; font-weight: 600; }
+  .sub { color: var(--ink-dim); font-size: 12px; }
+
+  .pill {
+    display: inline-block; font-family: "IBM Plex Mono", monospace; font-size: 11px;
+    padding: 2px 8px; border-radius: 20px; font-weight: 700; white-space: nowrap;
+  }
+  .pill.cut { background: var(--cut-soft); color: var(--cut); }
+  .pill.polish { background: var(--polish-soft); color: var(--polish); }
+  .pill.warn { background: #402424; color: #e28080; }
+
+  .steps {
+    list-style: none; margin: 0; padding: 0; display: grid; gap: 1px;
+    background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+  }
+  .steps li { background: var(--bg-panel); padding: 16px 18px; display: grid; grid-template-columns: 28px 1fr; gap: 14px; align-items: baseline; }
+  .steps li .n { font-family: "IBM Plex Mono", monospace; font-weight: 700; color: var(--ink-dim); font-size: 13px; }
+  .steps li b { font-weight: 650; }
+  .steps li .note { color: var(--ink-dim); font-size: 13.5px; }
+
+  .warn-box {
+    background: #2a1c1c; border: 1px solid #5a3232; border-radius: 10px;
+    padding: 16px 18px; font-size: 13.5px; color: #f0c9c9;
+  }
+  .warn-box b { color: #ffb0b0; }
+
+  details.sources { border: 1px solid var(--line); border-radius: 10px; background: var(--bg-panel); }
+  details.sources summary {
+    cursor: pointer; padding: 14px 18px; font-size: 13px; font-weight: 650;
+    list-style: none; display: flex; align-items: center; gap: 8px;
+  }
+  details.sources summary::-webkit-details-marker { display: none; }
+  details.sources summary::before { content: "▸"; color: var(--ink-dim); transition: transform 0.15s; }
+  details.sources[open] summary::before { transform: rotate(90deg); }
+  details.sources .src-list { padding: 0 18px 16px; margin: 0; columns: 2; column-gap: 24px; }
+  details.sources .src-list li { font-size: 12.5px; break-inside: avoid; margin-bottom: 8px; line-height: 1.4; }
+  @media (max-width: 620px) { details.sources .src-list { columns: 1; } }
+
+  footer {
+    margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line);
+    font-size: 12px; color: var(--ink-dim); font-family: "IBM Plex Mono", monospace;
+  }
+
+  @media (max-width: 560px) {
+    .wrap { padding: 32px 16px 64px; }
+    .masthead { flex-direction: column; align-items: flex-start; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div>
+      <p class="kicker">Reference Sheet · Automotive Glass Restoration</p>
+      <h1>Glass Polishing &amp; Water Spot Removal</h1>
+    </div>
+    <span class="plate">M18 FUEL 2684&#8209;20 · 15mm</span>
+  </div>
+  <p class="dek">Glass is not paint — different abrasive (cerium oxide, not paint compound), different pad (felt/wool/rayon, not foam), and a hard rule paint correction doesn't have: keep it wet or risk cracking the glass from heat. Product links point to a page you can actually buy from — Amazon where available. <span class="rating" style="vertical-align:1px;">4.7<span class="count">(8,437 Amazon)</span></span>-style badges are live star rating and review count pulled from that listing.</p>
+
+  <section aria-labelledby="tool-h">
+    <h2 id="tool-h">The tool &amp; the one rule</h2>
+    <div class="spec-grid">
+      <div class="cell"><div class="label">Model</div><div class="value">Milwaukee M18 FUEL 2684-20</div></div>
+      <div class="cell"><div class="label">Speed for glass</div><div class="value num">dial 4–5 (~1,000–1,500 RPM)</div></div>
+      <div class="cell"><div class="label">Backing plate</div><div class="value num">5" hook-and-loop · 49-36-0401</div></div>
+      <div class="cell"><div class="label">Pad type</div><div class="value">felt / wool / rayon — never foam</div></div>
+    </div>
+    <div class="warn-box" style="margin-top:14px;">
+      <b>Keep the glass wet, always.</b> Cerium oxide only cuts as a wet slurry — a dry pad on glass builds heat fast enough to thermally crack the pane, especially tempered side/rear glass. Mist water onto the work area every 15–30 seconds. If the slurry looks dry or is dragging, it has stopped working and started generating pure heat — stop and re-wet before continuing.
+    </div>
+  </section>
+
+  <section aria-labelledby="workflow-h">
+    <h2 id="workflow-h">Full workflow</h2>
+    <div class="wf-steps">
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>Wash &amp; clean glass</h3></div>
+        <p class="wf-desc">Ammonia-free streak-free glass cleaner — ammonia attacks window tint film and interior surfaces. Clean both sides; a scratch you're chasing on the outside is sometimes actually on the inside.</p>
+        <ul class="wf-products">
+          <li><span class="brand">Stoner</span><a href="https://www.amazon.com/Invisible-Glass-92194-oz-Streak-Free/dp/B0037LKPWC" target="_blank" rel="noopener noreferrer">Invisible Glass Cleaner</a><span class="why">ammonia-free, streak-free, tint-safe</span><span class="rating">4.7<span class="count">(8,437 Amazon)</span></span></li>
+        </ul>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>Decontaminate</h3></div>
+        <p class="wf-desc">Glass-safe clay bar to shear off bonded overspray, tree sap, and rail dust before polishing — the same contaminants that cause premature pad wear and drag marks if left on the surface.</p>
+        <ul class="wf-products">
+          <li><span class="brand">Adam's</span><a href="https://www.amazon.com/Adams-Clay-100g-Detailing-Contamination/dp/B07NRTRCF6" target="_blank" rel="noopener noreferrer">Fine Grade Clay Bar</a><span class="why">soft/fine grade, safe on glass, paint, and trim</span><span class="rating">4.3<span class="count">(62 Amazon)</span></span></li>
+        </ul>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>Tape off</h3></div>
+        <p class="wf-desc">Trim, cowl panel, A-pillars, wiper arms — anywhere a felt pad edge running at speed can catch and mar paint or plastic. Glass pads are more aggressive against soft trim than foam paint pads are.</p>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>Pre-treat water spots</h3></div>
+        <p class="wf-desc">If the marks are mineral deposits (hard water spots) rather than etching, a chemical remover often clears them without any abrasive polishing at all — try this before reaching for cerium oxide. Acid-based; never spray directly and let dwell, work a small area and wipe immediately. Skip this step and go straight to polishing if the marks are scratches/wiper haze rather than water spots.</p>
+        <ul class="wf-products">
+          <li><span class="brand">CarPro</span><a href="https://www.amazon.com/CARPRO-Spotless-2-0-Neutralizes-Plastics/dp/B09MGFBY93" target="_blank" rel="noopener noreferrer">Spotless 2.0</a><span class="why">controlled-acid mineral remover, works before abrasive step</span><span class="rating">3.8<span class="count">(62 Amazon)</span></span></li>
+          <li><span class="brand">Chemical Guys</span><a href="https://www.amazon.com/Chemical-Guys-Water-Spot-Remover-Automotive-Car/dp/B01N2G2NEJ" target="_blank" rel="noopener noreferrer">Heavy Duty Water Spot Remover Gel</a><span class="why">clinging gel, works on glass and paint</span><span class="rating">4.1<span class="count">(12,575 Amazon)</span></span></li>
+        </ul>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>Polish (remaining etching / wiper haze)</h3></div>
+        <p class="wf-desc">Felt, wool, or rayon pad + cerium oxide compound, dial 4–5, kept wet the entire time. Mix cerium oxide powder with water to a pancake-batter consistency if using a powder rather than a premixed compound. Work a 12"×12" area at a time, flat pad against the glass (never tilted — tilting concentrates pressure and risks edge burn), slow overlapping passes, re-wetting every 15–30 seconds.</p>
+        <div class="table-scroll">
+          <table>
+            <caption>pad + cerium oxide compound · best to worst per forum/review consensus</caption>
+            <thead>
+              <tr><th>Rank</th><th>Brand</th><th>Pad</th><th>Compound</th><th>Speed</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="rank">01</td>
+                <td><b>3M</b></td>
+                <td class="sub">felt/wool (any glass-rated)</td>
+                <td><a href="https://www.amazon.com/Glass-Polishing-Compound-60150-Capacity/dp/B007460F7Q" target="_blank" rel="noopener noreferrer">Glass Polishing Compound 60150</a><br><span class="rating">4.2<span class="count">(553 Amazon)</span></span></td>
+                <td class="num">4–5</td>
+              </tr>
+              <tr>
+                <td class="rank">02</td>
+                <td><b>CarPro</b></td>
+                <td><a href="https://www.amazon.com/CARPRO-Glass-Rayon-Polishing-Pad/dp/B0771R1FJR" target="_blank" rel="noopener noreferrer"><span class="pill cut">RAYON</span></a> glass pad<br><span class="rating">4.1<span class="count">(87 Amazon)</span></span></td>
+                <td><a href="https://www.amazon.com/CARPRO-CeriGlass-GlassPolish-150mL-5oz/dp/B006LO118O" target="_blank" rel="noopener noreferrer">CeriGlass Polish</a><br><span class="rating">4.2<span class="count">(151 Amazon)</span></span></td>
+                <td class="num">4–5</td>
+              </tr>
+              <tr>
+                <td class="rank">03</td>
+                <td><b>Maxshine</b></td>
+                <td><a href="https://www.amazon.com/Maxshine-Pure-Woolen-Glass-Polishing/dp/B0836PL2NQ" target="_blank" rel="noopener noreferrer"><span class="pill cut">WOOL</span></a> felt glass pad<br><span class="rating">4.2<span class="count">(25 Amazon)</span></span></td>
+                <td class="sub">pair with any cerium oxide compound</td>
+                <td class="num">4–5</td>
+              </tr>
+              <tr>
+                <td class="rank">04</td>
+                <td><b>Gordon Glass</b></td>
+                <td class="sub">felt/wool wheel, sold separately</td>
+                <td><a href="https://www.amazon.com/Gordon-Glass-Cerium-Oxide-Oz/dp/B007KOC19C" target="_blank" rel="noopener noreferrer">Cerium Oxide Powder</a><br><span class="rating">4.3<span class="count">(1,631 Amazon)</span></span></td>
+                <td class="num">4–5</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>Inspect</h3></div>
+        <p class="wf-desc">Clean the polished area, let it dry, and check under direct sun or a strong flashlight at a low angle — cerium oxide slurry residue can hide remaining light etching until it's fully wiped away. Streak-free glass cleaner again before final judgment.</p>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>Protect (optional)</h3></div>
+        <p class="wf-desc">A hydrophobic glass treatment beads water off the windshield at speed, improving visibility in rain and reducing how often wipers drag debris across the surface — the leading cause of new wiper-haze scratches.</p>
+        <ul class="wf-products">
+          <li><span class="brand">Rain-X</span><a href="https://www.amazon.com/Rain-X-800002250-Glass-Treatment-Trigger/dp/B000BVRZ74" target="_blank" rel="noopener noreferrer">Original Glass Treatment</a><span class="why">hydrophobic coating, improves wet-weather visibility</span><span class="rating">4.6<span class="count">(9,215 Amazon)</span></span></li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <section aria-labelledby="technique-h">
+    <h2 id="technique-h">Working a section</h2>
+    <ol class="steps">
+      <li><span class="n">01</span><div><b>Mix or prime</b> — cerium oxide powder mixed with water to a pancake-batter consistency, or premixed compound applied straight to the pad.</div></li>
+      <li><span class="n">02</span><div><b>Divide the glass into quarters</b> (or 12"×12" sections on a smaller pane) — work one section fully before moving on.</div></li>
+      <li><span class="n">03</span><div><b>Set dial 4–5</b>, hold the pad flat against the glass — never tilted, which concentrates pressure at one edge.</div></li>
+      <li><span class="n">04</span><div><b>Slow overlapping passes</b>, ~50% overlap, firm steady pressure — glass takes longer per section than paint, budget for it.</div></li>
+      <li><span class="n">05</span><div><b>Re-wet every 15–30 seconds</b> with a spray bottle. <span class="note">A dry, dragging pad means it's stopped cutting and started generating heat — the exact condition that risks cracking.</span></div></li>
+      <li><span class="n">06</span><div><b>Wipe and inspect</b> with streak-free glass cleaner before deciding a section is done — slurry film hides remaining defects.</div></li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="cleaning-h">
+    <h2 id="cleaning-h">Cleaning pads &amp; microfibers</h2>
+    <div class="wf-steps">
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>Felt / wool / rayon pads, after the job</h3></div>
+        <p class="wf-desc">Rinse thoroughly under running water immediately after use — dried cerium oxide slurry cakes into the fibers and is far harder to remove once set. Hand-wash with mild soap, working the water through the pad face, then rinse until it runs clear. Air-dry fully before storing; never wring wool or felt, squeeze gently instead. Keep glass pads stored separately from paint pads — cerium oxide is a harder abrasive than most paint polishes and will mar clear coat if cross-contaminated onto a paint pad.</p>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>Microfiber towels</h3></div>
+        <p class="wf-desc">Same rules as paint towels: wash microfiber separately from other fabrics, cold or cool water only (heat above ~105°F melts and closes the fibers), mild additive-free detergent, no fabric softener, air-dry or no-heat dryer setting. Keep towels used for cerium oxide slurry separate from glass-cleaner/streak-free towels — leftover abrasive residue on a "clean" towel will haze the next wipe-down.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section aria-labelledby="sources-h">
+    <h2 id="sources-h">Sources</h2>
+    <details class="sources">
+      <summary>16 citations — manufacturer pages, forum threads, retailer listings</summary>
+      <ul class="src-list">
+        <li><a href="https://www.amazon.com/CARPRO-CeriGlass-GlassPolish-150mL-5oz/dp/B006LO118O" target="_blank" rel="noopener noreferrer">CarPro CeriGlass Glass Polish</a></li>
+        <li><a href="https://www.amazon.com/CARPRO-Glass-Rayon-Polishing-Pad/dp/B0771R1FJR" target="_blank" rel="noopener noreferrer">CarPro Glass Rayon Polishing Pad</a></li>
+        <li><a href="https://www.amazon.com/Glass-Polishing-Compound-60150-Capacity/dp/B007460F7Q" target="_blank" rel="noopener noreferrer">3M Glass Polishing Compound 60150</a></li>
+        <li><a href="https://www.amazon.com/Gordon-Glass-Cerium-Oxide-Oz/dp/B007KOC19C" target="_blank" rel="noopener noreferrer">Gordon Glass Cerium Oxide Polishing Powder</a></li>
+        <li><a href="https://www.amazon.com/Maxshine-Pure-Woolen-Glass-Polishing/dp/B0836PL2NQ" target="_blank" rel="noopener noreferrer">Maxshine Wool Felt Glass Polishing Pad</a></li>
+        <li><a href="https://www.amazon.com/CARPRO-Spotless-2-0-Neutralizes-Plastics/dp/B09MGFBY93" target="_blank" rel="noopener noreferrer">CarPro Spotless 2.0 Water Spot Remover</a></li>
+        <li><a href="https://www.amazon.com/Chemical-Guys-Water-Spot-Remover-Automotive-Car/dp/B01N2G2NEJ" target="_blank" rel="noopener noreferrer">Chemical Guys Heavy Duty Water Spot Remover Gel</a></li>
+        <li><a href="https://www.amazon.com/Invisible-Glass-92194-oz-Streak-Free/dp/B0037LKPWC" target="_blank" rel="noopener noreferrer">Stoner Invisible Glass Cleaner</a></li>
+        <li><a href="https://www.amazon.com/Adams-Clay-100g-Detailing-Contamination/dp/B07NRTRCF6" target="_blank" rel="noopener noreferrer">Adam's Fine Grade Clay Bar</a></li>
+        <li><a href="https://www.amazon.com/Rain-X-800002250-Glass-Treatment-Trigger/dp/B000BVRZ74" target="_blank" rel="noopener noreferrer">Rain-X Original Glass Treatment</a></li>
+        <li><a href="https://autogeekonline.net/threads/glass-polishing-how-to-remove-scratches-in-glass.76589/" target="_blank" rel="noopener noreferrer">AutoGeek forum: Glass polishing — how to remove scratches</a></li>
+        <li><a href="https://autogeekonline.net/threads/removal-of-glass-scratches-with-carpro-and-a-griots-da.56650/" target="_blank" rel="noopener noreferrer">AutoGeek forum: Removal of glass scratches with CarPro and a Griot's DA</a></li>
+        <li><a href="https://autogeekonline.net/threads/best-pad-to-polish-windshield.126073/" target="_blank" rel="noopener noreferrer">AutoGeek forum: Best pad to polish windshield</a></li>
+        <li><a href="https://jracenstein.com/expert-advice-learning/how-to-remove-stains-and-polish-glass-with-cerium-oxide-1" target="_blank" rel="noopener noreferrer">J. Racenstein: How to Polish Glass with Cerium Oxide</a></li>
+        <li><a href="https://jimbosdetailing.com/blogs/water-spot-removal-lab/polish-car-glass-windshields" target="_blank" rel="noopener noreferrer">Jimbo's Detailing: Can You Polish Car Glass?</a></li>
+        <li><a href="https://jimbosdetailing.com/blogs/diy-detailing/remove-water-spots-windshield" target="_blank" rel="noopener noreferrer">Jimbo's Detailing: How to Remove Hard Water Spots from a Windshield</a></li>
+      </ul>
+    </details>
+  </section>
+
+  <footer>
+    Ranking basis: AutoGeek Online forum consensus plus retailer reviews. Wet-technique and heat-crack warnings sourced from professional glass-polishing guides — verify before working tempered or laminated glass.
+  </footer>
+
+</div>
+</body>
+</html>
