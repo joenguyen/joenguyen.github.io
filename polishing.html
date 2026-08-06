@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cut &amp; Polish — M18 15mm DA Reference</title>
+<style>
+  :root {
+    --bg: #1c1a17;
+    --bg-panel: #252220;
+    --ink: #ece6d9;
+    --ink-dim: #a89e8c;
+    --line: #3c3730;
+    --line-strong: #514a40;
+    --cut: #e2853f;
+    --cut-soft: #3a2a1d;
+    --polish: #7bb0d9;
+    --polish-soft: #1f2e38;
+    --focus: #e2853f;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", "Inter", Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono {
+    font-family: "IBM Plex Mono", "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  a { color: var(--focus); }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+  .wrap { max-width: 920px; margin: 0 auto; padding: 48px 24px 96px; }
+
+  .masthead {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 2px solid var(--ink); padding-bottom: 18px; margin-bottom: 6px;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .masthead .plate {
+    font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.12em;
+    color: var(--ink-dim); text-transform: uppercase; border: 1px solid var(--line-strong);
+    padding: 4px 9px; border-radius: 3px; white-space: nowrap;
+  }
+  h1 { font-size: clamp(28px, 4.2vw, 38px); font-weight: 800; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+  .kicker {
+    font-family: "IBM Plex Mono", monospace; font-size: 12.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--cut); margin: 0 0 8px; font-weight: 700;
+  }
+  .dek { color: var(--ink-dim); font-size: 15.5px; max-width: 64ch; margin: 14px 0 44px; }
+
+  section { margin-bottom: 56px; }
+  h2 {
+    font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--ink-dim); margin: 0 0 18px; display: flex; align-items: center; gap: 10px;
+  }
+  h2::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  .spec-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+  }
+  .spec-grid .cell { background: var(--bg-panel); padding: 16px 18px; }
+  .spec-grid .cell .label {
+    font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-dim); margin-bottom: 6px;
+  }
+  .spec-grid .cell .value { font-size: 15px; font-weight: 650; }
+  .spec-grid .cell .value.num { font-family: "IBM Plex Mono", monospace; }
+
+  .wf-steps { display: grid; gap: 14px; counter-reset: wf; }
+  .wf-step {
+    counter-increment: wf;
+    background: var(--bg-panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .wf-step .wf-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+  .wf-step .wf-head::before {
+    content: counter(wf);
+    font-family: "IBM Plex Mono", monospace; font-size: 11px; font-weight: 700;
+    color: var(--bg); background: var(--ink-dim); width: 22px; height: 22px; flex: none;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  }
+  .wf-step h3 { font-size: 16px; margin: 0; font-weight: 700; }
+  .wf-step .wf-desc { color: var(--ink-dim); font-size: 13.5px; margin: 0 0 14px 34px; }
+  .wf-products {
+    margin: 0 0 0 34px; padding: 0; list-style: none;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px;
+  }
+  .wf-products li {
+    border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px;
+    background: color-mix(in srgb, var(--ink) 3%, transparent);
+  }
+  .wf-products .brand {
+    font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--focus); font-weight: 700; display: block; margin-bottom: 2px;
+  }
+  .wf-products a { font-size: 13px; font-weight: 600; text-decoration: none; }
+  .wf-products a:hover { text-decoration: underline; }
+  .wf-products .why { display: block; color: var(--ink-dim); font-size: 11.5px; margin-top: 2px; }
+  .wf-step .table-scroll { margin-left: 34px; }
+  .wf-step .diagram-card { margin-left: 34px; }
+
+  .rating {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-family: "IBM Plex Mono", monospace; font-size: 10.5px; font-weight: 700;
+    color: var(--ink); background: color-mix(in srgb, var(--ink) 8%, transparent);
+    border: 1px solid var(--line-strong); border-radius: 4px; padding: 1px 6px; margin-top: 4px;
+  }
+  .rating::before { content: "★"; color: #e0b23c; }
+  .rating .count { color: var(--ink-dim); font-weight: 500; }
+  td .rating { margin-top: 2px; }
+
+  figure { margin: 0; }
+  .diagram-card { background: var(--bg-panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px; }
+  svg { display: block; width: 100%; height: auto; }
+  figcaption { font-size: 13px; color: var(--ink-dim); padding: 14px 10px 4px; max-width: 68ch; }
+
+  .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; background: var(--bg-panel); font-size: 13.5px; min-width: 640px; }
+  caption {
+    text-align: left; caption-side: top; padding: 14px 16px 0; font-size: 12px;
+    color: var(--ink-dim); font-family: "IBM Plex Mono", monospace;
+  }
+  thead th {
+    text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-dim); font-weight: 700; padding: 12px 16px; border-bottom: 1px solid var(--line-strong);
+    white-space: nowrap;
+  }
+  tbody td { padding: 13px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) { background: color-mix(in srgb, var(--ink) 3%, transparent); }
+  .rank { font-family: "IBM Plex Mono", monospace; font-weight: 700; color: var(--ink-dim); }
+  .num { font-family: "IBM Plex Mono", monospace; font-weight: 600; }
+  .sub { color: var(--ink-dim); font-size: 12px; }
+
+  .pill {
+    display: inline-block; font-family: "IBM Plex Mono", monospace; font-size: 11px;
+    padding: 2px 8px; border-radius: 20px; font-weight: 700; white-space: nowrap;
+  }
+  .pill.cut { background: var(--cut-soft); color: var(--cut); }
+  .pill.polish { background: var(--polish-soft); color: var(--polish); }
+
+  .steps {
+    list-style: none; margin: 0; padding: 0; display: grid; gap: 1px;
+    background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+  }
+  .steps li { background: var(--bg-panel); padding: 16px 18px; display: grid; grid-template-columns: 28px 1fr; gap: 14px; align-items: baseline; }
+  .steps li .n { font-family: "IBM Plex Mono", monospace; font-weight: 700; color: var(--ink-dim); font-size: 13px; }
+  .steps li b { font-weight: 650; }
+  .steps li .note { color: var(--ink-dim); font-size: 13.5px; }
+
+  details.sources { border: 1px solid var(--line); border-radius: 10px; background: var(--bg-panel); }
+  details.sources summary {
+    cursor: pointer; padding: 14px 18px; font-size: 13px; font-weight: 650;
+    list-style: none; display: flex; align-items: center; gap: 8px;
+  }
+  details.sources summary::-webkit-details-marker { display: none; }
+  details.sources summary::before { content: "▸"; color: var(--ink-dim); transition: transform 0.15s; }
+  details.sources[open] summary::before { transform: rotate(90deg); }
+  details.sources .src-list { padding: 0 18px 16px; margin: 0; columns: 2; column-gap: 24px; }
+  details.sources .src-list li { font-size: 12.5px; break-inside: avoid; margin-bottom: 8px; line-height: 1.4; }
+  @media (max-width: 620px) { details.sources .src-list { columns: 1; } }
+
+  footer {
+    margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line);
+    font-size: 12px; color: var(--ink-dim); font-family: "IBM Plex Mono", monospace;
+  }
+
+  @media (max-width: 560px) {
+    .wrap { padding: 32px 16px 64px; }
+    .masthead { flex-direction: column; align-items: flex-start; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div>
+      <p class="kicker">Reference Sheet · Automotive Paint Correction</p>
+      <h1>Cut, then Polish</h1>
+    </div>
+    <span class="plate">M18 FUEL 2684&#8209;20 · 15mm</span>
+  </div>
+  <p class="dek">Two machine passes over the same panel, in order — a firm cutting pad breaks defects down, a soft finishing pad clears the haze that leaves behind. Pads, compounds, speeds, and technique verified against manufacturer pages and detailing-forum consensus (full citations at the bottom). Product links point to a page you can actually buy from — Amazon where available, otherwise the brand's own store. <span class="rating" style="vertical-align:1px;">4.7<span class="count">(1,208 Amazon)</span></span>-style badges are live star rating and review count pulled from that listing.</p>
+
+  <section aria-labelledby="tool-h">
+    <h2 id="tool-h">The tool</h2>
+    <div class="spec-grid">
+      <div class="cell"><div class="label">Model</div><div class="value">Milwaukee M18 FUEL 2684-20</div></div>
+      <div class="cell"><div class="label">Throw</div><div class="value num">15mm — long throw</div></div>
+      <div class="cell"><div class="label">Speed range</div><div class="value num">2,650–5,100 OPM</div></div>
+      <div class="cell"><div class="label">Backing plate</div><div class="value num">5" hook-and-loop · 49-36-0401</div></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="workflow-h">
+    <h2 id="workflow-h">Full workflow</h2>
+    <div class="wf-steps">
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>Wash</h3></div>
+        <p class="wf-desc">Two-bucket method — one bucket of soap solution, one of clean rinse water, both with a grit guard, so grit dragged off the mitt settles out instead of going back onto the car. pH-neutral soap only; anything stripping won't leave wax/sealant intact for the steps ahead.</p>
+        <ul class="wf-products">
+          <li><span class="brand">Meguiar's</span><a href="https://www.amazon.com/Meguiars-G7164-Class-Shampoo-Conditioner/dp/B0009IQXFO" target="_blank" rel="noopener noreferrer">Gold Class Car Wash Shampoo</a><span class="why">pH-balanced, doesn't strip wax/sealant</span><span class="rating">4.8<span class="count">(17,546 Amazon)</span></span></li>
+          <li><span class="brand">Chemical Guys</span><a href="https://www.amazon.com/Chemical-Guys-CWS_110_16-Honeydew-Cleanser/dp/B009OTK094" target="_blank" rel="noopener noreferrer">Honeydew Snow Foam</a><span class="why">pH-balanced, works as foam cannon or bucket wash</span><span class="rating">4.7<span class="count">(35,297 Amazon)</span></span></li>
+          <li><span class="brand">Adam's</span><a href="https://www.amazon.com/Adams-Car-Wash-Shampoo-Luxurious/dp/B0058JJS0Q" target="_blank" rel="noopener noreferrer">Car Wash Shampoo</a><span class="why">pH-neutral, safe on ceramic coatings</span><span class="rating">4.7<span class="count">(6,884 Amazon)</span></span></li>
+          <li><span class="brand">Chemical Guys</span><a href="https://www.amazon.com/Chemical-Guys-Cyclone-Bucket-Removes/dp/B01CJEBHMY" target="_blank" rel="noopener noreferrer">Cyclone Dirt Trap bucket insert</a><span class="why">~300-funnel grit guard, traps dirt at the bottom</span><span class="rating">4.6<span class="count">(7,039 Amazon)</span></span></li>
+        </ul>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>Decontaminate</h3></div>
+        <p class="wf-desc">Iron remover first — dissolves embedded brake dust/rail dust chemically (look for the purple "bleeding" reaction, that's it working). Clay bar or clay mitt second, with a dedicated lubricant, to shear off anything bonded to the surface that iron remover can't touch (tree sap, overspray, mineral deposits).</p>
+        <ul class="wf-products">
+          <li><span class="brand">CarPro</span><a href="https://www.amazon.com/CARPRO-IronX-Iron-Remover-Decontamination/dp/B00CDSX1I0" target="_blank" rel="noopener noreferrer">IronX</a><span class="why">industry-standard iron remover, pH-balanced, acid-free</span><span class="rating">4.9<span class="count">(2,422 Amazon)</span></span></li>
+          <li><span class="brand">Meguiar's</span><a href="https://www.amazon.com/Meguiars-Ultimate-Iron-Remover-Contaminant/dp/B0DLCKTQ18" target="_blank" rel="noopener noreferrer">Ultimate Iron Remover</a><span class="why">consumer-friendly, same bleed-to-purple reaction</span><span class="rating">4.6<span class="count">(988 Amazon)</span></span></li>
+          <li><span class="brand">Chemical Guys</span><a href="https://www.amazon.com/Chemical-Guys-Clay-Bar-Kit-Automotive-Detailing/dp/B00BDF9EFS" target="_blank" rel="noopener noreferrer">Heavy Duty Clay Bar &amp; Luber Kit</a><span class="why">clay + synthetic lube in one kit</span><span class="rating">4.6<span class="count">(3,871 Amazon)</span></span></li>
+          <li><span class="brand">Meguiar's</span><a href="https://www.amazon.com/Meguiars-Smooth-Surface-Clay-Kit/dp/B07QY9FLLT" target="_blank" rel="noopener noreferrer">Smooth Surface Clay Kit</a><span class="why">includes quick detailer as lube, budget entry point</span><span class="rating">4.6<span class="count">(1,446 Amazon)</span></span></li>
+          <li><span class="brand">CarPro</span><a href="https://www.amazon.com/CARPRO-Aggressive-Car-Clay-Bar/dp/B0CTJ52JW4" target="_blank" rel="noopener noreferrer">Aggressive Clay Bar</a><span class="why">for heavier contamination, ceramic-coating prep</span><span class="rating">5.0<span class="count">(7 Amazon)</span></span></li>
+        </ul>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>Tape off</h3></div>
+        <p class="wf-desc">Trim, rubber seals, emblems, badges, sharp panel edges — anywhere a spinning pad edge can catch and throw compound, or where a pad can grab plastic/rubber and mar it.</p>
+        <ul class="wf-products">
+          <li><span class="brand">3M</span><a href="https://www.amazon.com/3M-3431-Automotive-Performance-Masking/dp/B004MEH78S" target="_blank" rel="noopener noreferrer">Automotive Performance Masking Tape</a><span class="why">the detailing-forum default — won't lift if a pad edge runs over it, clean removal</span><span class="rating">4.7<span class="count">(3,693 Amazon)</span></span></li>
+          <li><span class="brand">3M</span><a href="https://www.amazon.com/ROLLS-26334-Green-Masking-Tape/dp/B0082LHHTG" target="_blank" rel="noopener noreferrer">Performance Green Masking Tape 233+</a><span class="why">holds well on moldings/plastic/rubber</span><span class="rating">4.7<span class="count">(807 Amazon)</span></span></li>
+        </ul>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>Test spot</h3></div>
+        <p class="wf-desc">Inconspicuous panel, small area — confirms your pad/compound/speed combo actually corrects the defects present before committing the whole car to it. No products here; this is a technique step against the gear you've already picked from the tables below.</p>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>Cut</h3></div>
+        <p class="wf-desc">Firm cutting pad + cutting compound, high speed, real pressure — breaks down swirls, scratches, and oxidation. Work until the compound turns clear/translucent on the paint.</p>
+        <div class="table-scroll">
+          <table>
+            <caption>cutting pad + compound · best to worst per forum/review consensus</caption>
+            <thead>
+              <tr><th>Rank</th><th>Brand</th><th>Pad</th><th>Compound</th><th>Speed</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="rank">01</td>
+                <td><b>Rupes D-A</b></td>
+                <td><a href="https://www.amazon.com/RUPES-Coarse-Random-Orbital-Single/dp/B08GLF6NJB" target="_blank" rel="noopener noreferrer"><span class="pill cut">BLUE</span></a> coarse pad<br><span class="rating">4.2<span class="count">(30 Amazon)</span></span></td>
+                <td><a href="https://www.amazon.com/RUPES-Coarse-High-Performance-Cut/dp/B08HW1WQMH" target="_blank" rel="noopener noreferrer">D-A Coarse</a><br><span class="rating">4.7<span class="count">(493 Amazon)</span></span></td>
+                <td class="num">5–6</td>
+              </tr>
+              <tr>
+                <td class="rank">02</td>
+                <td><b>Menzerna</b></td>
+                <td><a href="https://www.amazon.com/Lake-Country-Blue-Heavy-Polishing/dp/B07WK4LYG9" target="_blank" rel="noopener noreferrer"><span class="pill cut">BLUE</span></a> firm/microfiber<br><span class="rating">4.3<span class="count">(131 Amazon)</span></span></td>
+                <td><a href="https://www.autogeek.net/menzerna-fast-gloss-fg400.html" target="_blank" rel="noopener noreferrer">FG400</a></td>
+                <td class="num">~4</td>
+              </tr>
+              <tr>
+                <td class="rank">03</td>
+                <td><b>Meguiar's</b></td>
+                <td><span class="pill cut">ORANGE</span> cutting foam</td>
+                <td><a href="https://www.amazon.com/Meguiars-Mirror-Glaze-Ultra-Cut-Compound/dp/B003LMGDHI" target="_blank" rel="noopener noreferrer">M105</a><br><span class="rating">4.5<span class="count">(10,849 Amazon)</span></span></td>
+                <td class="num">5–6</td>
+              </tr>
+              <tr>
+                <td class="rank">04</td>
+                <td><b>Chemical Guys</b></td>
+                <td><a href="https://www.amazon.com/Chemical-Guys-BUFX_102_HEX5-Hex-Logic-Medium-Heavy/dp/B0040MI9H0" target="_blank" rel="noopener noreferrer"><span class="pill cut">ORANGE</span></a> Hex-Logic<br><span class="rating">4.6<span class="count">(3,935 Amazon)</span></span></td>
+                <td><a href="https://www.amazon.com/Chemical-Guys-Gap_V34_16-Optical-Compound/dp/B00BQA3VEK" target="_blank" rel="noopener noreferrer">V32 / V34</a><br><span class="rating">4.6<span class="count">(564 Amazon)</span></span></td>
+                <td class="num">5–6</td>
+              </tr>
+              <tr>
+                <td class="rank">05</td>
+                <td><b>Adam's</b></td>
+                <td><a href="https://adamspolishes.com/products/adam-s-5-5-orange-microfiber-cutting-pad" target="_blank" rel="noopener noreferrer">Blue Microfiber</a></td>
+                <td><a href="https://www.amazon.com/Adams-Paint-Correcting-Compound-12oz/dp/B081QX1NM3" target="_blank" rel="noopener noreferrer">Heavy Correcting</a><br><span class="rating">4.6<span class="count">(97 Amazon)</span></span></td>
+                <td class="num">5–6</td>
+              </tr>
+              <tr>
+                <td class="rank">06</td>
+                <td><b>Milwaukee OEM</b></td>
+                <td class="num"><a href="https://greatlakespowertools.com/milwaukee-49-36-0603-5-in-foam-cutting-polishing-pads/" target="_blank" rel="noopener noreferrer">49-36-0601</a></td>
+                <td class="sub">—</td>
+                <td class="sub">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>Polish</h3></div>
+        <p class="wf-desc">Soft finishing pad + fine polish, lower speed, light-to-no pressure — clears the haze the cut left behind and brings up final gloss. Work until an IPA wipe shows no haze.</p>
+        <div class="table-scroll">
+          <table>
+            <caption>finishing pad + polish · best to worst per forum/review consensus</caption>
+            <thead>
+              <tr><th>Rank</th><th>Brand</th><th>Pad</th><th>Polish</th><th>Speed</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="rank">01</td>
+                <td><b>Rupes D-A</b></td>
+                <td><a href="https://www.amazon.com/RUPES-New-Fine-Pads-Performance/dp/B08GLJ1LLT" target="_blank" rel="noopener noreferrer"><span class="pill polish">YELLOW</span></a> fine pad<br><span class="rating">4.7<span class="count">(84 Amazon)</span></span></td>
+                <td><a href="https://www.amazon.com/RUPES-FINE-Compound-1000ML-33-8OZ/dp/B0CTSFQ9RP" target="_blank" rel="noopener noreferrer">D-A Fine</a><br><span class="rating">4.8<span class="count">(256 Amazon)</span></span></td>
+                <td class="num">4–5</td>
+              </tr>
+              <tr>
+                <td class="rank">02</td>
+                <td><b>Menzerna</b></td>
+                <td><a href="https://www.amazon.com/Lake-Country-Mfg-Orange-Polishing/dp/B07SQ48FRV" target="_blank" rel="noopener noreferrer"><span class="pill polish">ORANGE</span></a> polishing foam<br><span class="rating">4.7<span class="count">(172 Amazon)</span></span></td>
+                <td>Super Finish 3500</td>
+                <td class="num">3–4</td>
+              </tr>
+              <tr>
+                <td class="rank">03</td>
+                <td><b>Meguiar's</b></td>
+                <td><span class="pill polish">WHITE</span> finishing foam</td>
+                <td><a href="https://www.amazon.com/Meguiars-Mirror-Glaze-Finishing-Polish/dp/B001O7PNXC" target="_blank" rel="noopener noreferrer">M205</a><br><span class="rating">4.6<span class="count">(6,948 Amazon)</span></span></td>
+                <td class="num">4–5</td>
+              </tr>
+              <tr>
+                <td class="rank">04</td>
+                <td><b>Chemical Guys</b></td>
+                <td><a href="https://www.amazon.com/Chemical-Guys-BUFX_104_HEX5-Hex-Logic-Light-Medium/dp/B0041MVQ4M" target="_blank" rel="noopener noreferrer"><span class="pill polish">WHITE</span></a> Hex-Logic<br><span class="rating">4.6<span class="count">(1,036 Amazon)</span></span></td>
+                <td><a href="https://www.amazon.com/Chemical-Guys-Vline-Compound-Polish-Detailing-Kit/dp/B00P67GSRG" target="_blank" rel="noopener noreferrer">V36 / V38</a><br><span class="rating">4.7<span class="count">(5,656 Amazon)</span></span></td>
+                <td class="num">3–4</td>
+              </tr>
+              <tr>
+                <td class="rank">05</td>
+                <td><b>Adam's</b></td>
+                <td><a href="https://adamspolishes.com/products/adam-s-new-6-white-foam-finishing-pad" target="_blank" rel="noopener noreferrer">White Foam</a></td>
+                <td>White Polish</td>
+                <td class="num">3–4</td>
+              </tr>
+              <tr>
+                <td class="rank">06</td>
+                <td><b>Milwaukee OEM</b></td>
+                <td class="num"><a href="https://greatlakespowertools.com/milwaukee-49-36-0602-5-in-foam-cutting-pad/" target="_blank" rel="noopener noreferrer">49-36-0602</a></td>
+                <td class="sub">—</td>
+                <td class="sub">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>The two-stage pass</h3></div>
+        <p class="wf-desc">How the cut and polish steps relate — same panel section, two different machine settings.</p>
+        <figure class="diagram-card" style="margin-left: 34px;">
+          <svg viewBox="0 0 1000 610" role="img" aria-label="Diagram: cutting stage removes scratches and oxidation using a firm cutting pad at speed 5 to 6 with heavy pressure, moving the paint surface from scratched to hazed. Polishing stage removes the resulting haze using a soft finishing pad at speed 3 to 4 with light pressure, moving the surface to clear gloss. Both stages use the same overlapping crosshatch pass pattern across a 2 by 2 foot section.">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+              </marker>
+            </defs>
+
+            <text x="500" y="30" text-anchor="middle" font-size="12" font-family="IBM Plex Mono, monospace" font-weight="700" letter-spacing="0.08em" fill="currentColor" opacity="0.55">PAINT SURFACE STATE</text>
+
+            <g transform="translate(60,50)">
+              <g>
+                <rect x="0" y="0" width="230" height="48" rx="4" fill="none" stroke="currentColor" stroke-opacity="0.3"/>
+                <rect x="0" y="0" width="230" height="48" rx="4" fill="currentColor" opacity="0.05"/>
+                <g stroke="currentColor" stroke-opacity="0.7" stroke-width="1.4">
+                  <path d="M20,10 L60,38"/>
+                  <path d="M45,8 L95,42"/>
+                  <path d="M80,12 L130,40"/>
+                  <path d="M115,9 L165,39"/>
+                  <path d="M150,11 L200,41"/>
+                  <path d="M180,8 L215,32"/>
+                </g>
+                <text x="115" y="66" text-anchor="middle" font-size="12.5" font-weight="600" fill="currentColor">Scratched / oxidized</text>
+              </g>
+
+              <path d="M240,24 L330,24" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+              <g transform="translate(340,0)">
+                <rect x="0" y="0" width="230" height="48" rx="4" fill="none" stroke="currentColor" stroke-opacity="0.3"/>
+                <rect x="0" y="0" width="230" height="48" rx="4" fill="#b8541e" opacity="0.12"/>
+                <g stroke="currentColor" stroke-opacity="0.25" stroke-width="1">
+                  <path d="M25,14 L65,34"/>
+                  <path d="M60,12 L105,36"/>
+                  <path d="M100,15 L145,33"/>
+                  <path d="M140,13 L180,35"/>
+                  <path d="M175,14 L210,32"/>
+                </g>
+                <text x="115" y="66" text-anchor="middle" font-size="12.5" font-weight="600" fill="currentColor">Cut, but hazed</text>
+              </g>
+
+              <path d="M580,24 L670,24" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+              <g transform="translate(680,0)">
+                <rect x="0" y="0" width="230" height="48" rx="4" fill="none" stroke="currentColor" stroke-opacity="0.3"/>
+                <rect x="0" y="0" width="230" height="48" rx="4" fill="#2f6690" opacity="0.14"/>
+                <path d="M20,9 Q115,-6 210,9" stroke="currentColor" stroke-opacity="0.5" stroke-width="2" fill="none"/>
+                <path d="M30,32 Q115,22 200,32" stroke="currentColor" stroke-opacity="0.25" stroke-width="1.4" fill="none"/>
+                <text x="115" y="66" text-anchor="middle" font-size="12.5" font-weight="600" fill="currentColor">Clear, glossed</text>
+              </g>
+            </g>
+
+            <g transform="translate(60,158)">
+              <rect x="0" y="0" width="420" height="292" rx="10" fill="#b8541e" opacity="0.05"/>
+              <rect x="0" y="0" width="420" height="292" rx="10" fill="none" stroke="#b8541e" stroke-width="1.5" stroke-opacity="0.5"/>
+
+              <rect x="0" y="0" width="122" height="30" rx="15" fill="#b8541e"/>
+              <text x="61" y="20" text-anchor="middle" font-size="12.5" font-family="IBM Plex Mono, monospace" font-weight="700" fill="#fff" letter-spacing="0.03em">STAGE 1 — CUT</text>
+
+              <text x="20" y="54" font-size="12.5" fill="currentColor" opacity="0.68">Removes swirls, scratches, oxidation</text>
+
+              <g transform="translate(20,72)">
+                <circle cx="20" cy="20" r="20" fill="#b8541e" opacity="0.8"/>
+                <circle cx="20" cy="20" r="20" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
+                <text x="54" y="16" font-size="12" font-weight="600" fill="currentColor">Firm cutting pad</text>
+                <text x="54" y="31" font-size="11" fill="currentColor" opacity="0.6">foam or microfiber</text>
+              </g>
+
+              <g transform="translate(20,128)">
+                <text x="0" y="0" font-size="11" font-family="IBM Plex Mono, monospace" font-weight="700" letter-spacing="0.06em" fill="currentColor" opacity="0.55">SPEED DIAL</text>
+                <g transform="translate(0,10)">
+                  <rect x="0" y="0" width="196" height="15" rx="7.5" fill="currentColor" opacity="0.08"/>
+                  <rect x="0" y="0" width="147" height="15" rx="7.5" fill="#b8541e"/>
+                  <text x="206" y="12.5" font-size="14" font-family="IBM Plex Mono, monospace" font-weight="700" fill="currentColor">5–6</text>
+                </g>
+              </g>
+
+              <g transform="translate(20,170)">
+                <text x="0" y="0" font-size="11" font-family="IBM Plex Mono, monospace" font-weight="700" letter-spacing="0.06em" fill="currentColor" opacity="0.55">PRESSURE</text>
+                <text x="0" y="18" font-size="13" fill="currentColor">3–5 lb · thumb-hard push</text>
+              </g>
+
+              <g transform="translate(20,202)">
+                <text x="0" y="0" font-size="11" font-family="IBM Plex Mono, monospace" font-weight="700" letter-spacing="0.06em" fill="currentColor" opacity="0.55">PASSES</text>
+                <text x="0" y="18" font-size="13" fill="currentColor">4–6 crosshatch,</text>
+                <text x="0" y="34" font-size="13" fill="currentColor">~50% overlap</text>
+                <g transform="translate(218,-6)">
+                  <rect x="0" y="0" width="58" height="58" rx="5" fill="currentColor" opacity="0.04" stroke="currentColor" stroke-opacity="0.25"/>
+                  <g stroke="#b8541e" stroke-width="1.4" opacity="0.85">
+                    <line x1="6" y1="12" x2="52" y2="12"/>
+                    <line x1="6" y1="24" x2="52" y2="24"/>
+                    <line x1="6" y1="36" x2="52" y2="36"/>
+                    <line x1="6" y1="48" x2="52" y2="48"/>
+                    <line x1="12" y1="6" x2="12" y2="52"/>
+                    <line x1="24" y1="6" x2="24" y2="52"/>
+                    <line x1="36" y1="6" x2="36" y2="52"/>
+                    <line x1="48" y1="6" x2="48" y2="52"/>
+                  </g>
+                </g>
+              </g>
+
+              <g transform="translate(20,264)">
+                <rect x="0" y="0" width="380" height="20" rx="6" fill="currentColor" opacity="0.05"/>
+                <text x="190" y="14" text-anchor="middle" font-size="11.5" fill="currentColor"><tspan font-family="IBM Plex Mono, monospace" font-weight="700" opacity="0.65">UNTIL </tspan>compound turns clear on paint</text>
+              </g>
+            </g>
+
+            <path d="M486,304 L554,304" stroke="currentColor" stroke-width="2" marker-end="url(#arrow)"/>
+            <text x="520" y="292" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.5">wipe, inspect</text>
+
+            <g transform="translate(560,158)">
+              <rect x="0" y="0" width="420" height="292" rx="10" fill="#2f6690" opacity="0.05"/>
+              <rect x="0" y="0" width="420" height="292" rx="10" fill="none" stroke="#2f6690" stroke-width="1.5" stroke-opacity="0.5"/>
+
+              <rect x="0" y="0" width="152" height="30" rx="15" fill="#2f6690"/>
+              <text x="76" y="20" text-anchor="middle" font-size="12.5" font-family="IBM Plex Mono, monospace" font-weight="700" fill="#fff" letter-spacing="0.03em">STAGE 2 — POLISH</text>
+
+              <text x="20" y="54" font-size="12.5" fill="currentColor" opacity="0.68">Removes haze the cut left, refines gloss</text>
+
+              <g transform="translate(20,72)">
+                <circle cx="20" cy="20" r="20" fill="#2f6690" opacity="0.65"/>
+                <circle cx="20" cy="20" r="20" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
+                <text x="54" y="16" font-size="12" font-weight="600" fill="currentColor">Soft finishing pad</text>
+                <text x="54" y="31" font-size="11" fill="currentColor" opacity="0.6">foam, white/yellow</text>
+              </g>
+
+              <g transform="translate(20,128)">
+                <text x="0" y="0" font-size="11" font-family="IBM Plex Mono, monospace" font-weight="700" letter-spacing="0.06em" fill="currentColor" opacity="0.55">SPEED DIAL</text>
+                <g transform="translate(0,10)">
+                  <rect x="0" y="0" width="196" height="15" rx="7.5" fill="currentColor" opacity="0.08"/>
+                  <rect x="0" y="0" width="98" height="15" rx="7.5" fill="#2f6690"/>
+                  <text x="206" y="12.5" font-size="14" font-family="IBM Plex Mono, monospace" font-weight="700" fill="currentColor">3–4</text>
+                </g>
+              </g>
+
+              <g transform="translate(20,170)">
+                <text x="0" y="0" font-size="11" font-family="IBM Plex Mono, monospace" font-weight="700" letter-spacing="0.06em" fill="currentColor" opacity="0.55">PRESSURE</text>
+                <text x="0" y="18" font-size="13" fill="currentColor">Light-to-none · let pad work</text>
+              </g>
+
+              <g transform="translate(20,202)">
+                <text x="0" y="0" font-size="11" font-family="IBM Plex Mono, monospace" font-weight="700" letter-spacing="0.06em" fill="currentColor" opacity="0.55">PASSES</text>
+                <text x="0" y="18" font-size="13" fill="currentColor">Same crosshatch,</text>
+                <text x="0" y="34" font-size="13" fill="currentColor">~50% overlap</text>
+                <g transform="translate(218,-6)">
+                  <rect x="0" y="0" width="58" height="58" rx="5" fill="currentColor" opacity="0.04" stroke="currentColor" stroke-opacity="0.25"/>
+                  <g stroke="#2f6690" stroke-width="1.4" opacity="0.85">
+                    <line x1="6" y1="12" x2="52" y2="12"/>
+                    <line x1="6" y1="24" x2="52" y2="24"/>
+                    <line x1="6" y1="36" x2="52" y2="36"/>
+                    <line x1="6" y1="48" x2="52" y2="48"/>
+                    <line x1="12" y1="6" x2="12" y2="52"/>
+                    <line x1="24" y1="6" x2="24" y2="52"/>
+                    <line x1="36" y1="6" x2="36" y2="52"/>
+                    <line x1="48" y1="6" x2="48" y2="52"/>
+                  </g>
+                </g>
+              </g>
+
+              <g transform="translate(20,264)">
+                <rect x="0" y="0" width="380" height="20" rx="6" fill="currentColor" opacity="0.05"/>
+                <text x="190" y="14" text-anchor="middle" font-size="11.5" fill="currentColor"><tspan font-family="IBM Plex Mono, monospace" font-weight="700" opacity="0.65">UNTIL </tspan>IPA wipe shows no haze</text>
+              </g>
+            </g>
+
+            <text x="500" y="585" text-anchor="middle" font-size="11.5" fill="currentColor" opacity="0.5">Never let pressure stall the pad — it wastes heat instead of cutting. Clean the pad between sections.</text>
+          </svg>
+          <figcaption>Cutting and polishing are two separate passes over the same panel section, each with its own pad, speed, and pressure. The cut breaks defects down to a hazed surface; the polish clears that haze to reach final gloss.</figcaption>
+        </figure>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>IPA wipe-down</h3></div>
+        <p class="wf-desc">10–20% isopropyl alcohol diluted with distilled water, or a premade panel wipe — strips oily compound/polish residue so you can judge the actual paint result, and so any wax/sealant/coating applied next bonds to bare paint instead of leftover product film.</p>
+        <ul class="wf-products">
+          <li><span class="brand">Gtechniq</span><a href="https://www.amazon.com/Gtechniq-PW-Residue-Remover-Cleaner/dp/B00S8FX5VK" target="_blank" rel="noopener noreferrer">Panel Wipe (PWv2)</a><span class="why">ready-to-use, safe on softer OEM clears</span><span class="rating">4.7<span class="count">(1,208 Amazon)</span></span></li>
+          <li><span class="brand">CarPro</span><a href="https://www.amazon.com/Eraser-Intense-Polish-Cleanser-Refill/dp/B00FY1E0HE" target="_blank" rel="noopener noreferrer">Eraser</a><span class="why">panel prep before ceramic coating application</span><span class="rating">4.7<span class="count">(737 Amazon)</span></span></li>
+          <li><span class="brand">DIY</span><span class="why" style="margin-top:0; display:inline;">70% isopropyl alcohol : distilled water, mixed 1:1 to ~35% — works in most cases</span></li>
+        </ul>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>Seal / wax / coat</h3></div>
+        <p class="wf-desc">Locks in the correction. Pick one tier: a wax/sealant hybrid for months of protection and low effort, or a ceramic coating for multi-year durability with a stricter application window.</p>
+        <ul class="wf-products">
+          <li><span class="brand">Collinite</span><a href="https://www.amazon.com/845-Sealant-High-Hydrophobic-Protection-Motorcycles/dp/B000JK2D06" target="_blank" rel="noopener noreferrer">No. 845 Insulator Wax</a><span class="why">carnauba/polymer hybrid, 4–7 months, budget favorite</span><span class="rating">4.8<span class="count">(4,135 Amazon)</span></span></li>
+          <li><span class="brand">Meguiar's</span><a href="https://www.amazon.com/Meguiars-G190526-Hybrid-Ceramic-Wax/dp/B06WVQ6MVR" target="_blank" rel="noopener noreferrer">Hybrid Ceramic Wax</a><span class="why">easy spray-on, strong water beading, under $20</span><span class="rating">4.6<span class="count">(4,732 Amazon)</span></span></li>
+          <li><span class="brand">CarPro</span><a href="https://www.amazon.com/CarPro-CQuartz-UK-3-0_50ml-Kit/dp/B07D4MMP2B" target="_blank" rel="noopener noreferrer">Cquartz UK 3.0</a><span class="why">professional-grade ceramic, 2+ year durability</span><span class="rating">4.7<span class="count">(1,039 Amazon)</span></span></li>
+          <li><span class="brand">Gtechniq</span><a href="https://www.amazon.com/Gtechniq-Crystal-Protection-Chemical-Resistance/dp/B07C4JRDY1" target="_blank" rel="noopener noreferrer">Crystal Serum Light</a><span class="why">high-end ceramic, strong gloss + chemical resistance</span><span class="rating">4.6<span class="count">(982 Amazon)</span></span></li>
+          <li><span class="brand">Adam's</span><a href="https://www.amazon.com/Adams-Advanced-Graphene-Ceramic-Coating/dp/B099KN8Z22" target="_blank" rel="noopener noreferrer">Graphene Ceramic Coating</a><span class="why">DIY-friendly, UV-tracer tech shows exactly where you've applied it</span><span class="rating">4.4<span class="count">(797 Amazon)</span></span></li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <section aria-labelledby="technique-h">
+    <h2 id="technique-h">Working a section</h2>
+    <ol class="steps">
+      <li><span class="n">01</span><div><b>Apply to the pad</b>, not the panel — 3–5 pea-sized drops. <span class="note">Priming with a mist of detail spray helps the pad grip product.</span></div></li>
+      <li><span class="n">02</span><div><b>Spread at low speed</b> (dial 1–2) across a 2×2 ft section before ramping up.</div></li>
+      <li><span class="n">03</span><div><b>Work at target speed</b> — crosshatch passes, horizontal then vertical, ~50% overlap.</div></li>
+      <li><span class="n">04</span><div><b>Stop when the product turns clear</b> on the paint — that's full breakdown, not before.</div></li>
+      <li><span class="n">05</span><div><b>Wipe and inspect</b> with an IPA solution (10–20% isopropyl alcohol / distilled water) before judging the result.</div></li>
+      <li><span class="n">06</span><div><b>Repeat with the polish step</b> — same crosshatch pattern, lower speed, light-to-no pressure.</div></li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="cleaning-h">
+    <h2 id="cleaning-h">Cleaning pads &amp; microfibers</h2>
+    <div class="wf-steps">
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>Between sections</h3></div>
+        <p class="wf-desc">Brush the pad face while it's still on the machine, low speed, to knock off caked/dried product before it builds up and starts reducing cut. Do this every section, not just at the end of the job.</p>
+        <ul class="wf-products">
+          <li><span class="brand">Griot's Garage</span><a href="https://www.amazon.com/Griots-Garage-15548-Conditioning-Brush/dp/B004UQIX9U" target="_blank" rel="noopener noreferrer">Pad Conditioning Brush</a><span class="why">soft bristles, safe to use on the machine at low speed</span><span class="rating">4.6<span class="count">(283 Amazon)</span></span></li>
+          <li><span class="brand">Chemical Guys</span><a href="https://www.amazon.com/Chemical-Guys-ACC_991-Cleaning-Brush/dp/B00BCH4ZJC" target="_blank" rel="noopener noreferrer">Foam Pad Cleaning Brush</a><span class="why">works on foam and wool alike</span><span class="rating">4.6<span class="count">(453 Amazon)</span></span></li>
+          <li><span class="brand">Maxshine</span><a href="https://www.amazon.com/Maxshine-Pad-Conditioning-Brush/dp/B08P2TN5K8" target="_blank" rel="noopener noreferrer">Foam Pad Conditioning Brush</a><span class="why">stiffer bristles for heavier dried buildup</span><span class="rating">4.6<span class="count">(87 Amazon)</span></span></li>
+        </ul>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>Pads, after the job</h3></div>
+        <p class="wf-desc">Rinse under warm water first to break loose bulk residue, then hand-wash — submerge in warm water with a mild dish soap or dedicated pad cleaner and repeatedly squeeze the soapy water through the pad face until it runs clear. Rinse thoroughly and squeeze out excess water; never wring or twist foam. Air-dry fully before storing — a damp pad left sealed up will mildew. Keep cutting-pad and polishing-pad washes separate so leftover compound doesn't contaminate a finishing pad.</p>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-head"><h3>Microfiber towels</h3></div>
+        <p class="wf-desc">Wash microfiber separately from every other fabric — cotton lint embeds in the fibers and ruins their scratch-free surface. Cold or cool water only; heat above ~105°F starts to melt and close the fibers' wedge shape, which is what makes them absorbent and non-scratching in the first place. Use a mild, additive-free detergent — no fragrance, no fabric softener, both coat the fibers and kill their cleaning ability. Separate paint towels from wax/sealant towels and glass towels; cross-contamination shows up as smearing or swirls on the next job. Dry on no-heat/air-fluff, or just hang dry — a hot dryer cycle does the same fiber damage as hot wash water.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section aria-labelledby="sources-h">
+    <h2 id="sources-h">Sources</h2>
+    <details class="sources">
+      <summary>55 citations — manufacturer pages, forum threads, retailer listings</summary>
+      <ul class="src-list">
+        <li><a href="https://www.amazon.com/Meguiars-G7164-Class-Shampoo-Conditioner/dp/B0009IQXFO" target="_blank" rel="noopener noreferrer">Meguiar's Gold Class Car Wash Shampoo</a></li>
+        <li><a href="https://www.amazon.com/Chemical-Guys-CWS_110_16-Honeydew-Cleanser/dp/B009OTK094" target="_blank" rel="noopener noreferrer">Chemical Guys Honeydew Snow Foam</a></li>
+        <li><a href="https://www.amazon.com/Chemical-Guys-Cyclone-Bucket-Removes/dp/B01CJEBHMY" target="_blank" rel="noopener noreferrer">Chemical Guys Cyclone Dirt Trap bucket insert</a></li>
+        <li><a href="https://www.amazon.com/CARPRO-IronX-Iron-Remover-Decontamination/dp/B00CDSX1I0" target="_blank" rel="noopener noreferrer">CarPro IronX</a></li>
+        <li><a href="https://www.amazon.com/Chemical-Guys-Clay-Bar-Kit-Automotive-Detailing/dp/B00BDF9EFS" target="_blank" rel="noopener noreferrer">Chemical Guys Clay Bar &amp; Luber Kit</a></li>
+        <li><a href="https://www.amazon.com/3M-3431-Automotive-Performance-Masking/dp/B004MEH78S" target="_blank" rel="noopener noreferrer">3M Automotive Performance Masking Tape</a></li>
+        <li><a href="https://www.amazon.com/ROLLS-26334-Green-Masking-Tape/dp/B0082LHHTG" target="_blank" rel="noopener noreferrer">3M Performance Green Masking Tape 233+</a></li>
+        <li><a href="https://www.amazon.com/Gtechniq-PW-Residue-Remover-Cleaner/dp/B00S8FX5VK" target="_blank" rel="noopener noreferrer">Gtechniq Panel Wipe (PWv2)</a></li>
+        <li><a href="https://www.amazon.com/845-Sealant-High-Hydrophobic-Protection-Motorcycles/dp/B000JK2D06" target="_blank" rel="noopener noreferrer">Collinite No. 845 Insulator Wax</a></li>
+        <li><a href="https://www.amazon.com/CarPro-CQuartz-UK-3-0_50ml-Kit/dp/B07D4MMP2B" target="_blank" rel="noopener noreferrer">CarPro Cquartz UK 3.0</a></li>
+        <li><a href="https://www.milwaukeetool.com/products/details/m18-fuel-15mm-random-orbital-polisher/2684-20" target="_blank" rel="noopener noreferrer">Milwaukee M18 FUEL 15mm Random Orbital Polisher</a></li>
+        <li><a href="https://greatlakespowertools.com/milwaukee-49-36-0401-m18-5-in-backing-plate/" target="_blank" rel="noopener noreferrer">Milwaukee 5" Backing Plate 49-36-0401</a></li>
+        <li><a href="https://greatlakespowertools.com/milwaukee-49-36-0602-5-in-foam-cutting-pad/" target="_blank" rel="noopener noreferrer">Milwaukee 49-36-0602 Foam Polishing Pad</a></li>
+        <li><a href="https://greatlakespowertools.com/milwaukee-49-36-0603-5-in-foam-cutting-polishing-pads/" target="_blank" rel="noopener noreferrer">Milwaukee 49-36-0603 Cutting/Polishing Pads</a></li>
+        <li><a href="https://autogeekonline.net/threads/how-much-more-cut-do-you-get-when-going-from-an-8mm-to-a-15mm-throw-dual-action-polisher.125952/" target="_blank" rel="noopener noreferrer">AutoGeek: 8mm vs 15mm throw cutting power</a></li>
+        <li><a href="https://adamspolishes.com/pages/understanding-machine-polishing" target="_blank" rel="noopener noreferrer">Adam's: Understanding Machine Polishing</a></li>
+        <li><a href="https://adamspolishes.com/pages/how-to-polish-your-car-to-perfection-polishing-for-beginners" target="_blank" rel="noopener noreferrer">Adam's: How To Polish Your Car To Perfection</a></li>
+        <li><a href="https://lakecountrymfg.com/detailbay/polishing-pad-faq/" target="_blank" rel="noopener noreferrer">Lake Country Mfg: Polishing Pad FAQ</a></li>
+        <li><a href="https://www.amazon.com/Lake-Country-Blue-Heavy-Polishing/dp/B07WK4LYG9" target="_blank" rel="noopener noreferrer">Lake Country HDO Blue Cutting Pad</a></li>
+        <li><a href="https://www.amazon.com/Lake-Country-Mfg-Orange-Polishing/dp/B07SQ48FRV" target="_blank" rel="noopener noreferrer">Lake Country HDO Orange Polishing Pad</a></li>
+        <li><a href="https://www.detailedimage.com/Lake-Country-M7/HDO-Black-Finishing-Pad-P1471/55-S1/" target="_blank" rel="noopener noreferrer">Lake Country HDO Black Finishing Pad</a></li>
+        <li><a href="https://www.amazon.com/RUPES-New-Fine-Pads-Performance/dp/B08GLJ1LLT" target="_blank" rel="noopener noreferrer">Rupes D-A Fine Yellow Foam Pad</a></li>
+        <li><a href="https://www.obsessedgarage.com/products/rupes-d-a-ultra-finewhitefoam-polishing-pads" target="_blank" rel="noopener noreferrer">Rupes D-A Ultra-Fine White Foam Pad</a></li>
+        <li><a href="https://www.amazon.com/RUPES-Coarse-Random-Orbital-Single/dp/B08GLF6NJB" target="_blank" rel="noopener noreferrer">Rupes D-A Coarse Blue Foam Pad</a></li>
+        <li><a href="https://www.amazon.com/Chemical-Guys-BUFX_102_HEX5-Hex-Logic-Medium-Heavy/dp/B0040MI9H0" target="_blank" rel="noopener noreferrer">Chemical Guys Orange Hex-Logic Cutting Pad</a></li>
+        <li><a href="https://www.amazon.com/Chemical-Guys-BUFX_104_HEX5-Hex-Logic-Light-Medium/dp/B0041MVQ4M" target="_blank" rel="noopener noreferrer">Chemical Guys White Hex-Logic Polishing Pad</a></li>
+        <li><a href="https://www.amazon.com/Chemical-Guys-BUFX_106HEX5-Hex-Logic-Finishing/dp/B0042TTIYO" target="_blank" rel="noopener noreferrer">Chemical Guys Black Hex-Logic Finishing Pad</a></li>
+        <li><a href="https://www.amazon.com/Chemical-Guys-BUF_HEX_Kits_8P-Hex-Logic-Buffing/dp/B00BTGDR9A" target="_blank" rel="noopener noreferrer">Chemical Guys Hex-Logic 5.5" Pad Kit</a></li>
+        <li><a href="https://adamspolishes.com/products/adam-s-5-5-orange-microfiber-cutting-pad" target="_blank" rel="noopener noreferrer">Adam's Blue Microfiber Cutting Pad</a></li>
+        <li><a href="https://adamspolishes.com/products/adam-s-6-blue-foam-cutting-pad" target="_blank" rel="noopener noreferrer">Adam's Blue Foam Compound Pad</a></li>
+        <li><a href="https://adamspolishes.com/products/adam-s-new-6-white-foam-finishing-pad" target="_blank" rel="noopener noreferrer">Adam's White Foam Finishing Pad</a></li>
+        <li><a href="https://www.amazon.com/Adams-Paint-Correcting-Compound-12oz/dp/B081QX1NM3" target="_blank" rel="noopener noreferrer">Adam's Heavy Correcting Compound</a></li>
+        <li><a href="https://www.autogeek.net/menzerna-fast-gloss-fg400.html" target="_blank" rel="noopener noreferrer">Menzerna Heavy Cut Compound 400 / FG400</a></li>
+        <li><a href="https://autogeekonline.net/threads/menzerna-400-3500-combo.106541/" target="_blank" rel="noopener noreferrer">AutoGeek forum: Menzerna 400/3500 combo</a></li>
+        <li><a href="https://www.autogeekonline.net/forum/auto-detailing-101-a/119692-pad-recommendations-menzerna-heavy-cut-compound-fg400.html" target="_blank" rel="noopener noreferrer">AutoGeek forum: Menzerna FG400 pad recs</a></li>
+        <li><a href="https://www.amazon.com/Meguiars-Mirror-Glaze-Ultra-Cut-Compound/dp/B003LMGDHI" target="_blank" rel="noopener noreferrer">Meguiar's M105 Ultra-Cut Compound</a></li>
+        <li><a href="https://www.amazon.com/Meguiars-Mirror-Glaze-Finishing-Polish/dp/B001O7PNXC" target="_blank" rel="noopener noreferrer">Meguiar's M205 Ultra-Finishing Polish</a></li>
+        <li><a href="https://autogeekonline.net/threads/m105-m205-pads.55843/" target="_blank" rel="noopener noreferrer">AutoGeek forum: M105/M205 pad recommendations</a></li>
+        <li><a href="https://www.amazon.com/RUPES-Coarse-High-Performance-Cut/dp/B08HW1WQMH" target="_blank" rel="noopener noreferrer">Rupes D-A Coarse Compound</a></li>
+        <li><a href="https://www.amazon.com/RUPES-FINE-Compound-1000ML-33-8OZ/dp/B0CTSFQ9RP" target="_blank" rel="noopener noreferrer">Rupes D-A Fine Compound</a></li>
+        <li><a href="https://www.amazon.com/Chemical-Guys-Gap_V34_16-Optical-Compound/dp/B00BQA3VEK" target="_blank" rel="noopener noreferrer">Chemical Guys V34 Optical Grade Hybrid Compound</a></li>
+        <li><a href="https://www.amazon.com/Chemical-Guys-Vline-Compound-Polish-Detailing-Kit/dp/B00P67GSRG" target="_blank" rel="noopener noreferrer">Chemical Guys V-Line Polish &amp; Compound Kit</a></li>
+        <li><a href="https://autogeekonline.net/threads/rupes-vs-menzerna.90384/" target="_blank" rel="noopener noreferrer">AutoGeek/Detailing World: Meguiar's vs Menzerna vs Rupes</a></li>
+        <li><a href="https://www.meguiarsonline.com/forum/general-auto-detailing-discussion/detailing-101/62257-correct-steps-for-cleaning-polishing-ipa-rub-and-sealant" target="_blank" rel="noopener noreferrer">Meguiar's forum: wash/polish/IPA/sealant order</a></li>
+        <li><a href="https://adamspolishes.com/products/car-shampoo" target="_blank" rel="noopener noreferrer">Adam's Car Wash Shampoo</a></li>
+        <li><a href="https://www.amazon.com/Meguiars-Ultimate-Iron-Remover-Contaminant/dp/B0DLCKTQ18" target="_blank" rel="noopener noreferrer">Meguiar's Ultimate Iron Remover</a></li>
+        <li><a href="https://www.amazon.com/Meguiars-Smooth-Surface-Clay-Kit/dp/B07QY9FLLT" target="_blank" rel="noopener noreferrer">Meguiar's Smooth Surface Clay Kit</a></li>
+        <li><a href="https://www.amazon.com/Meguiars-G190526-Hybrid-Ceramic-Wax/dp/B06WVQ6MVR" target="_blank" rel="noopener noreferrer">Meguiar's Hybrid Ceramic Wax</a></li>
+        <li><a href="https://www.amazon.com/Gtechniq-Crystal-Protection-Chemical-Resistance/dp/B07C4JRDY1" target="_blank" rel="noopener noreferrer">Gtechniq Crystal Serum Light</a></li>
+        <li><a href="https://www.amazon.com/Adams-Advanced-Graphene-Ceramic-Coating/dp/B099KN8Z22" target="_blank" rel="noopener noreferrer">Adam's Graphene Ceramic Coating</a></li>
+        <li><a href="https://www.amazon.com/Griots-Garage-15548-Conditioning-Brush/dp/B004UQIX9U" target="_blank" rel="noopener noreferrer">Griot's Garage Pad Conditioning Brush</a></li>
+        <li><a href="https://www.amazon.com/Chemical-Guys-ACC_991-Cleaning-Brush/dp/B00BCH4ZJC" target="_blank" rel="noopener noreferrer">Chemical Guys Foam Pad Cleaning Brush</a></li>
+        <li><a href="https://www.amazon.com/Maxshine-Pad-Conditioning-Brush/dp/B08P2TN5K8" target="_blank" rel="noopener noreferrer">Maxshine Foam Pad Conditioning Brush</a></li>
+        <li><a href="https://www.detailedimage.com/Ask-a-Pro/pad-cleaning-during-and-after-polishing/" target="_blank" rel="noopener noreferrer">Detailed Image: Pad Cleaning During and After Polishing</a></li>
+        <li><a href="https://www.chemicalguys.com/blogs/sdu-hands-on-training/how-to-clean-microfiber-towels" target="_blank" rel="noopener noreferrer">Chemical Guys: How to Clean Microfiber Towels</a></li>
+      </ul>
+    </details>
+  </section>
+
+  <footer>
+    Ranking basis: AutoGeek Online, Detailing World, and Autopia forum consensus plus retailer reviews.
+  </footer>
+
+</div>
+</body>
+</html>
